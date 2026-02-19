@@ -14,7 +14,7 @@ const { className, posts, fluid } = Astro.props;
 
 <div class={`relative grid gap-8 ${className}`}>
   {/* Industrial background accent for the grid area */}
-  <div class="absolute inset-0 dark:bg-[radial-gradient(#ffffff05_1px,transparent_1px)] bg-[radial-gradient(#00000005_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none -mx-4"></div>
+  <div class="absolute inset-0 opacity-[0.4]" style="background-image: radial-gradient(var(--grid-color) 1px, transparent 1px); background-size: 20px 20px; pointer-events: none; margin-left: -1rem; margin-right: -1rem;"></div>
 
   {posts && posts.map((post, i: number) => (
     <div class={`${(i === 0 && fluid !== false) ? "md:col-span-2 lg:col-span-3" : "col-span-1"}`}>

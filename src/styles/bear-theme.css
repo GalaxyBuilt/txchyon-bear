@@ -10,9 +10,14 @@
 /* Base Bear Theme (Light) */
 [data-theme="bear"] {
   --color-bear-bg: #ffffff;
+  --color-bear-bg-alt: #f8f9fa;
+  --color-bear-bg-card: #ffffff;
+  --color-bear-bg-terminal: #f1f3f5;
   --color-bear-text: #050607;
   --color-bear-text-muted: #666666;
+  --color-bear-text-dim: #999999;
   --color-bear-border: rgba(0, 0, 0, 0.08);
+  --color-bear-border-accent: rgba(255, 51, 51, 0.2);
   --glass-bg: rgba(255, 255, 255, 0.8);
   --glass-border: rgba(255, 51, 51, 0.1);
   --grid-color: var(--grid-color-light);
@@ -21,10 +26,15 @@
 /* Dark Mode Overrides for Bear Theme */
 html.dark [data-theme="bear"],
 [data-theme="bear"].dark {
-  --color-bear-bg: #050607;
+  --color-bear-bg: #030405;
+  --color-bear-bg-alt: #050708;
+  --color-bear-bg-card: #0a0c0e;
+  --color-bear-bg-terminal: #030405;
   --color-bear-text: #f0f0f0;
   --color-bear-text-muted: #888888;
+  --color-bear-text-dim: #555555;
   --color-bear-border: rgba(255, 255, 255, 0.08);
+  --color-bear-border-accent: rgba(255, 51, 51, 0.15);
   --glass-bg: rgba(10, 10, 10, 0.7);
   --glass-border: rgba(255, 51, 51, 0.15);
   --grid-color: var(--grid-color-dark);
@@ -100,6 +110,41 @@ html.dark [data-theme="bear"] .bg-white\/80 {
   background-color: var(--glass-bg) !important;
 }
 
-html.dark [data-theme="bear"] .border-white\/10 {
+[data-theme="bear"] .bear-bg-main {
+  background-color: var(--color-bear-bg) !important;
+}
+
+[data-theme="bear"] .bear-bg-alt {
+  background-color: var(--color-bear-bg-alt) !important;
+}
+
+[data-theme="bear"] .bear-bg-card {
+  background-color: var(--color-bear-bg-card) !important;
+}
+
+[data-theme="bear"] .bear-bg-terminal {
+  background-color: var(--color-bear-bg-terminal) !important;
+}
+
+[data-theme="bear"] .bear-text-main {
+  color: var(--color-bear-text) !important;
+}
+
+[data-theme="bear"] .bear-text-muted {
+  color: var(--color-bear-text-muted) !important;
+}
+
+[data-theme="bear"] .bear-text-dim {
+  color: var(--color-bear-text-dim) !important;
+}
+
+[data-theme="bear"] .bear-border-accent {
+  border-color: var(--color-bear-border-accent) !important;
+}
+
+[data-theme="bear"] .bear-border-muted {
   border-color: var(--color-bear-border) !important;
 }
+
+/* Invert logic for specific components that should remain dark if desired, 
+   but for now let's stick to true light/dark switching */

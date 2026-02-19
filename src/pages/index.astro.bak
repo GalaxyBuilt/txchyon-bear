@@ -1,4165 +1,1058 @@
 ---
-
-
-
 // src/pages/bear/index.astro - BEARISH REDESIGN: Defensive Intelligence Division
-
-
-
 import { getCollection } from 'astro:content';
-
-
-
-import Base from "@/layouts/Base.astro";
-
-
-
+import Base from "@/layouts/BaseBear.astro";
 import Posts from "@/layouts/components/Posts.astro";
-
-
-
 import Pagination from "@/layouts/components/Pagination.astro";
-
-
-
 import { CATEGORY_HIERARCHY } from '@/lib/categories';
-
-
-
 import BearGenesisPreview from "../partials/BearGenesisPreview.astro";
 
-
-
-
-
-
-
 // Helper function for automatic readTime calculation
-
-
-
 function calculateReadTime(content, wordsPerMinute = 130) {
-
-
-
 if (!content) return 10;
 
-
-
-
-
-
-
 const plainText = content
-
-
-
 .replace(/---[\s\S]*?---/, '')
-
-
-
 .replace(/```[\s\S]*?```/g, '')
-
-
-
 .replace(/<[^>]*>/g, '')
-
-
-
     .replace(/#{1,6}\s*/g, '')
-
-
-
     .replace(/[\[\]\(\)]/g, ' ')
-
-
-
     .replace(/\s+/g, ' ')
-
-
-
     .trim();
 
-
-
-
-
-
-
     const wordCount = plainText.split(/\s+/).length;
-
-
-
     const minutes = Math.ceil(wordCount / wordsPerMinute);
 
-
-
-
-
-
-
     return Math.max(1, Math.min(minutes, 60));
-
-
-
     }
-
-
-
-
-
-
 
     function getPostReadTime(post) {
-
-
-
     if (post.data.readTime) return post.data.readTime;
-
-
-
     if (post.body) return calculateReadTime(post.body);
 
-
-
-
-
-
-
     const estimates = {
-
-
-
     'macro-liquidity': 8,
-
-
-
     'systemic-risk': 10,
-
-
-
     'fraud-red-flags': 12,
-
-
-
     'bearish-frameworks': 15,
-
-
-
     'crowd-psychology': 12,
-
-
-
     'capital-preservation': 14
-
-
-
     };
-
-
-
-
-
-
 
     return estimates[post.data.category] || 10;
-
-
-
     }
-
-
-
-
-
-
 
     const allPostsRaw = await getCollection('posts', ({ data }) => !data.draft);
-
-
-
     const allPosts = allPostsRaw.map(post => ({
-
-
-
     ...post,
-
-
-
     data: {
-
-
-
     ...post.data,
-
-
-
     readTime: getPostReadTime(post)
-
-
-
     }
-
-
-
     }));
 
-
-
-
-
-
-
     const sortedPosts = allPosts.sort(
-
-
-
     (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-
-
-
     );
 
-
-
-
-
-
-
     const featuredPost = sortedPosts[0];
-
-
-
     const latestPosts = sortedPosts.slice(1, 8);
 
-
-
-
-
-
-
     // Bearish Pillar Categories
-
-
-
     const BEAR_PILLARS = [
-
-
-
     { id: 'macro-liquidity', name: 'Macro_Liquidity', icon: '💧', color: 'from-red-600 to-orange-700', border:
-
-
-
     'border-red-900/30', bg: 'bg-red-950/20', hover: 'hover:border-red-600', text: 'text-red-500' },
-
-
-
     { id: 'systemic-risk', name: 'Systemic_Risk', icon: '⚠️', color: 'from-amber-600 to-red-700', border:
-
-
-
     'border-amber-900/30', bg: 'bg-amber-950/20', hover: 'hover:border-amber-500', text: 'text-amber-500' },
-
-
-
     { id: 'fraud-red-flags', name: 'Fraud_&_Red_Flags', icon: '🚩', color: 'from-red-600 to-rose-700', border:
-
-
-
     'border-red-900/30', bg: 'bg-red-950/20', hover: 'hover:border-rose-500', text: 'text-rose-500' },
-
-
-
     { id: 'bearish-frameworks', name: 'Bearish_Frameworks', icon: '📉', color: 'from-orange-600 to-red-700', border:
-
-
-
     'border-orange-900/30', bg: 'bg-orange-950/20', hover: 'hover:border-orange-500', text: 'text-orange-500' },
-
-
-
     { id: 'crowd-psychology', name: 'Crowd_Psychology', icon: '🧠', color: 'from-stone-600 to-red-700', border:
-
-
-
     'border-stone-900/30', bg: 'bg-stone-950/20', hover: 'hover:border-stone-500', text: 'text-stone-500' },
-
-
-
     { id: 'capital-preservation', name: 'Capital_Preservation', icon: '🛡️', color: 'from-emerald-900 to-red-800',
-
-
-
     border: 'border-emerald-900/30', bg: 'bg-emerald-950/20', hover: 'hover:border-emerald-500', text:
-
-
-
     'text-emerald-500' }
-
-
-
     ];
 
-
-
-
-
-
-
     const categoryPosts = {};
-
-
-
     const categoryPostCounts = {};
 
-
-
-
-
-
-
     BEAR_PILLARS.forEach(pillar => {
-
-
-
     const allPostsInCategory = sortedPosts.filter(p => p.data.category === pillar.id);
-
-
-
     categoryPostCounts[pillar.id] = allPostsInCategory.length;
-
-
-
     categoryPosts[pillar.id] = allPostsInCategory
-
-
-
     .filter(p => p.slug !== featuredPost?.slug)
-
-
-
     .slice(0, 3);
-
-
-
     });
 
-
-
-
-
-
-
     const realisticStats = {
-
-
-
     reportsPublished: allPosts.length.toString(),
-
-
-
     defensiveNodes: "850+",
-
-
-
     riskFlags: "230+",
-
-
-
     monthsActive: "1"
-
-
-
     };
-
-
-
     ---
 
-
-
-
-
-
-
     <Base title="Txchyon BEAR // Defensive Intelligence Division // Contrarian OS"
-
-
-
         description="Professional-grade defensive market intelligence. Open-source risk analysis, systemic threat detection, and capital preservation frameworks for serious investors."
-
-
-
         hasGatedContent={false}>
 
-
-
-
-
-
-
     <!-- 🛡️ BEAR GENESIS TERMINAL (DARK/INVERTED VERSION) -->
-
-
-
     <BearGenesisPreview />
 
-
-
-
-
-
-
     <!-- ⚠️ RISK ASSESSMENT HUB (FULL SCALE DARK MATRIX) -->
-
-
-
     <section
-
-
-
-        class="py-32 bear-bg-main text-[#d1d5db] selection:bg-red-500 selection:text-black font-mono relative overflow-hidden border-y bear-border-accent">
-
-
-
+        class="py-32 bg-[#030405] text-[#d1d5db] selection:bg-red-500 selection:text-black font-mono relative overflow-hidden border-y border-red-900/20">
         <!-- Tier 3: Dark Dot Grid Background + Blood Glows -->
-
-
-
         <div class="absolute inset-0 pointer-events-none z-0"
-
-
-
             style="background-image: radial-gradient(circle, #b91c1c 1px, transparent 1px); background-size: 32px 32px; opacity: 0.04;">
-
-
-
         </div>
-
-
-
         <div class="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20 z-0">
-
-
-
             <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-red-900/30 blur-[120px] rounded-full"></div>
-
-
-
             <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-orange-900/30 blur-[120px] rounded-full">
-
-
-
             </div>
-
-
-
         </div>
-
-
-
-
-
-
 
         <div class="container mx-auto px-4 relative z-10">
-
-
-
             <div class="flex flex-col md:flex-row justify-between items-center md:items-end mb-20 gap-8">
-
-
-
                 <div class="animate-fade-in-up" style="animation-delay: 0.1s;">
-
-
-
                     <!-- Tier 2: Blood Gradient Text on Section Header -->
-
-
-
                     <h2
-
-
-
-                        class="text-5xl md:text-7xl font-black mb-6 tracking-tighter uppercase italic leading-[0.85] bear-text-main">
-
-
-
+                        class="text-5xl md:text-7xl font-black mb-6 tracking-tighter uppercase italic leading-[0.85] text-white">
                         The <span
-
-
-
                             class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-orange-600 to-amber-700">Risk</span><br />Assessment<span
-
-
-
                             class="blinking-cursor">_</span>
-
-
-
                     </h2>
-
-
-
                     <div class="h-1.5 w-32 bg-gradient-to-r from-red-600 to-orange-700 mb-4"></div>
-
-
-
-                    <p class="text-[10px] font-bold bear-text-dim tracking-[0.4em] uppercase">Contrarian OS // Threat
-
-
-
+                    <p class="text-[10px] font-bold text-gray-500 tracking-[0.4em] uppercase">Contrarian OS // Threat
                         Detection Interface</p>
-
-
-
                 </div>
-
-
-
-
-
-
 
                 <!-- Tier 1: Counter Animation on Stats (Bearish) -->
-
-
-
-                <div class="flex gap-8 text-[10px] font-black items-center bear-text-dim uppercase tracking-widest border bear-border-accent p-6 rounded-2xl bear-bg-card/80 backdrop-blur-md animate-fade-in-up"
-
-
-
+                <div class="flex gap-8 text-[10px] font-black items-center text-gray-500 uppercase tracking-widest border border-red-900/20 p-6 rounded-2xl bg-[#0a0c0e]/80 backdrop-blur-md animate-fade-in-up"
                     style="animation-delay: 0.2s;">
-
-
-
                     <div class="flex flex-col gap-1">
-
-
-
                         <span class="opacity-50">Risk_Index</span>
-
-
-
                         <span class="text-red-500" data-counter-target="78">0</span><span
-
-
-
                             class="text-red-500">%_ELEVATED</span>
-
-
-
                     </div>
-
-
-
                     <div class="w-px h-8 bg-red-900/20"></div>
-
-
-
                     <div class="flex flex-col gap-1">
-
-
-
                         <span class="opacity-50">Flags</span>
-
-
-
                         <span class="text-orange-500" data-counter-target="23">0</span><span
-
-
-
                             class="text-orange-500">ACTIVE</span>
-
-
-
                     </div>
-
-
-
                     <div class="w-px h-8 bg-red-900/20"></div>
-
-
-
                     <div class="flex flex-col gap-1">
-
-
-
                         <span class="opacity-50">Status</span>
-
-
-
                         <span class="text-amber-500">DEFENSIVE</span>
-
-
-
                     </div>
-
-
-
                 </div>
-
-
-
             </div>
-
-
-
-
-
-
 
             <!-- Tier 2: Dark Glassmorphism Cards with Hover Lift - BEAR PILLARS -->
-
-
-
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-
-
-
                 <!-- Pillar 01: Macro Liquidity -->
-
-
-
-                <div class="group relative overflow-hidden bear-bg-card border bear-border-accent p-10 hover:bear-bg-alt hover:border-red-600/50 transition-all cursor-pointer rounded-[2rem] shadow-xl shadow-red-950/20 hover:-translate-y-2 animate-fade-in-up"
-
-
-
+                <div class="group relative overflow-hidden bg-[#0a0c0e] border border-red-900/20 p-10 hover:bg-[#0f1113] hover:border-red-600/50 transition-all cursor-pointer rounded-[2rem] shadow-xl shadow-red-950/20 hover:-translate-y-2 animate-fade-in-up"
                     style="animation-delay: 0.3s;">
-
-
-
                     <!-- Tier 1: Animated Gradient Border -->
-
-
-
                     <div
-
-
-
                         class="absolute inset-0 rounded-[2rem] p-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-
-
-
                         <div
-
-
-
                             class="absolute inset-0 rounded-[2rem] bg-gradient-to-r from-red-600 via-orange-600 to-amber-700 animate-spin-slow">
-
-
-
                         </div>
-
-
-
                     </div>
-
-
-
                     <div class="relative z-10">
-
-
-
-                        <div class="absolute top-0 right-0 p-6 opacity-20 text-[10px] bear-text-dim font-black">RISK_001
-
-
-
+                        <div class="absolute top-0 right-0 p-6 opacity-20 text-[10px] text-gray-500 font-black">RISK_001
                         </div>
-
-
-
                         <div class="flex flex-col h-full justify-between min-h-[320px]">
-
-
-
                             <div>
-
-
-
                                 <div class="text-red-500 text-[10px] font-black mb-4 tracking-[0.3em]">LAYER_01 //
-
-
-
                                     LIQUIDITY</div>
-
-
-
                                 <h3
-
-
-
                                     class="text-4xl font-black mb-6 italic text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400 group-hover:from-red-500 group-hover:to-orange-500 transition-all">
-
-
-
                                     MACRO LIQUIDITY</h3>
-
-
-
-                                <p class="text-sm bear-text-muted leading-relaxed italic">Global liquidity cycles, central
-
-
-
+                                <p class="text-sm text-gray-400 leading-relaxed italic">Global liquidity cycles, central
                                     bank policy, and capital flow analysis for regime detection.</p>
-
-
-
                             </div>
-
-
-
                             <div class="flex flex-col gap-4">
-
-
-
                                 <a href="/bear/macro-liquidity"
-
-
-
-                                    class="inline-block w-fit px-8 py-4 bg-[#1e1e1e] bear-text-main font-black text-xs uppercase tracking-widest hover:bg-gradient-to-r from-red-600 to-orange-700 transition-colors rounded-xl shadow-lg">Analyze_Flows
-
-
-
+                                    class="inline-block w-fit px-8 py-4 bg-[#1e1e1e] text-white font-black text-xs uppercase tracking-widest hover:bg-gradient-to-r from-red-600 to-orange-700 transition-colors rounded-xl shadow-lg">Analyze_Flows
                                     →</a>
-
-
-
                             </div>
-
-
-
                         </div>
-
-
-
                     </div>
-
-
-
                 </div>
-
-
-
-
-
-
 
                 <!-- Pillar 02: Systemic Risk -->
-
-
-
-                <div class="group relative overflow-hidden bear-bg-card border bear-border-accent p-10 hover:bear-bg-alt hover:border-amber-600/50 transition-all cursor-pointer rounded-[2rem] shadow-xl shadow-amber-950/20 hover:-translate-y-2 animate-fade-in-up"
-
-
-
+                <div class="group relative overflow-hidden bg-[#0a0c0e] border border-amber-900/20 p-10 hover:bg-[#0f1113] hover:border-amber-600/50 transition-all cursor-pointer rounded-[2rem] shadow-xl shadow-amber-950/20 hover:-translate-y-2 animate-fade-in-up"
                     style="animation-delay: 0.4s;">
-
-
-
-                    <div class="absolute top-0 right-0 p-6 opacity-20 text-[10px] bear-text-dim font-black">RISK_002
-
-
-
+                    <div class="absolute top-0 right-0 p-6 opacity-20 text-[10px] text-gray-500 font-black">RISK_002
                     </div>
-
-
-
                     <div class="flex flex-col h-full justify-between min-h-[320px]">
-
-
-
                         <div>
-
-
-
                             <div class="text-amber-500 text-[10px] font-black mb-4 tracking-[0.3em]">LAYER_02 //
-
-
-
                                 SYSTEMIC</div>
-
-
-
                             <h3
-
-
-
                                 class="text-4xl font-black mb-6 italic text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-red-400 group-hover:text-amber-500 transition-colors">
-
-
-
                                 SYSTEMIC RISK</h3>
-
-
-
-                            <p class="text-sm bear-text-muted mb-8 leading-relaxed italic">Contagion vectors, protocol
-
-
-
+                            <p class="text-sm text-gray-400 mb-8 leading-relaxed italic">Contagion vectors, protocol
                                 interdependencies, and market structure vulnerabilities.</p>
-
-
-
                         </div>
-
-
-
                         <a href="/bear/systemic-risk"
-
-
-
                             class="text-[11px] font-black text-amber-500 hover:tracking-[0.2em] transition-all uppercase underline decoration-2 underline-offset-8">Map_Threats
-
-
-
                             →</a>
-
-
-
                     </div>
-
-
-
                 </div>
-
-
-
-
-
-
 
                 <!-- Pillar 03: Fraud & Red Flags -->
-
-
-
-                <div class="group relative overflow-hidden bear-bg-card border bear-border-accent p-10 hover:bear-bg-alt hover:border-rose-600/50 transition-all cursor-pointer rounded-[2rem] shadow-xl shadow-rose-950/20 hover:-translate-y-2 animate-fade-in-up"
-
-
-
+                <div class="group relative overflow-hidden bg-[#0a0c0e] border border-rose-900/20 p-10 hover:bg-[#0f1113] hover:border-rose-600/50 transition-all cursor-pointer rounded-[2rem] shadow-xl shadow-rose-950/20 hover:-translate-y-2 animate-fade-in-up"
                     style="animation-delay: 0.5s;">
-
-
-
-                    <div class="absolute top-0 right-0 p-6 opacity-20 text-[10px] bear-text-dim font-black">RISK_003
-
-
-
+                    <div class="absolute top-0 right-0 p-6 opacity-20 text-[10px] text-gray-500 font-black">RISK_003
                     </div>
-
-
-
                     <div class="flex flex-col h-full justify-between min-h-[320px]">
-
-
-
                         <div>
-
-
-
                             <div class="text-rose-500 text-[10px] font-black mb-4 tracking-[0.3em]">LAYER_03 //
-
-
-
                                 FORENSICS</div>
-
-
-
                             <h3
-
-
-
                                 class="text-4xl font-black mb-6 italic text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-red-400 group-hover:text-rose-500 transition-colors">
-
-
-
                                 FRAUD & RED FLAGS</h3>
-
-
-
-                            <p class="text-sm bear-text-muted mb-8 leading-relaxed italic">On-chain forensics, team
-
-
-
+                            <p class="text-sm text-gray-400 mb-8 leading-relaxed italic">On-chain forensics, team
                                 analysis, and early warning systems for malicious actors.</p>
-
-
-
                         </div>
-
-
-
                         <a href="/bear/fraud-red-flags"
-
-
-
                             class="text-[11px] font-black text-rose-500 hover:tracking-[0.2em] transition-all uppercase underline decoration-2 underline-offset-8">Investigate
-
-
-
                             →</a>
-
-
-
                     </div>
-
-
-
                 </div>
-
-
-
-
-
-
 
                 <!-- Pillar 04: Bearish Frameworks -->
-
-
-
-                <div class="group relative overflow-hidden bear-bg-card border bear-border-accent p-10 hover:bear-bg-alt hover:border-orange-600/50 transition-all cursor-pointer rounded-[2rem] shadow-xl shadow-orange-950/20 hover:-translate-y-2 animate-fade-in-up"
-
-
-
+                <div class="group relative overflow-hidden bg-[#0a0c0e] border border-orange-900/20 p-10 hover:bg-[#0f1113] hover:border-orange-600/50 transition-all cursor-pointer rounded-[2rem] shadow-xl shadow-orange-950/20 hover:-translate-y-2 animate-fade-in-up"
                     style="animation-delay: 0.6s;">
-
-
-
-                    <div class="absolute top-0 right-0 p-6 opacity-20 text-[10px] bear-text-dim font-black">RISK_004
-
-
-
+                    <div class="absolute top-0 right-0 p-6 opacity-20 text-[10px] text-gray-500 font-black">RISK_004
                     </div>
-
-
-
                     <div class="flex flex-col h-full justify-between min-h-[320px]">
-
-
-
                         <div>
-
-
-
                             <div class="text-orange-500 text-[10px] font-black mb-4 tracking-[0.3em]">LAYER_04 //
-
-
-
                                 FRAMEWORKS</div>
-
-
-
                             <h3
-
-
-
                                 class="text-4xl font-black mb-6 italic text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400 group-hover:text-orange-500 transition-colors">
-
-
-
                                 BEARISH FRAMEWORKS</h3>
-
-
-
-                            <p class="text-sm bear-text-muted leading-relaxed italic">Short thesis development, hedge
-
-
-
+                            <p class="text-sm text-gray-400 leading-relaxed italic">Short thesis development, hedge
                                 construction, and contrarian position sizing models.</p>
-
-
-
                         </div>
-
-
-
                         <a href="/bear/bearish-frameworks"
-
-
-
                             class="text-[11px] font-black text-orange-500 hover:tracking-[0.2em] transition-all uppercase underline decoration-2 underline-offset-8">Build_Thesis
-
-
-
                             →</a>
-
-
-
                     </div>
-
-
-
                 </div>
-
-
-
-
-
-
 
                 <!-- Pillar 05: Crowd Psychology -->
-
-
-
-                <div class="group relative overflow-hidden bear-bg-card border bear-border-accent p-10 hover:bear-bg-alt hover:border-stone-600/50 transition-all cursor-pointer rounded-[2rem] shadow-xl shadow-stone-950/20 hover:-translate-y-2 animate-fade-in-up"
-
-
-
+                <div class="group relative overflow-hidden bg-[#0a0c0e] border border-stone-900/20 p-10 hover:bg-[#0f1113] hover:border-stone-600/50 transition-all cursor-pointer rounded-[2rem] shadow-xl shadow-stone-950/20 hover:-translate-y-2 animate-fade-in-up"
                     style="animation-delay: 0.7s;">
-
-
-
-                    <div class="absolute top-0 right-0 p-6 opacity-20 text-[10px] bear-text-dim font-black">RISK_005
-
-
-
+                    <div class="absolute top-0 right-0 p-6 opacity-20 text-[10px] text-gray-500 font-black">RISK_005
                     </div>
-
-
-
                     <div class="flex flex-col h-full justify-between min-h-[320px]">
-
-
-
                         <div>
-
-
-
                             <div class="text-stone-500 text-[10px] font-black mb-4 tracking-[0.3em]">LAYER_05 //
-
-
-
                                 BEHAVIORAL</div>
-
-
-
                             <h3
-
-
-
                                 class="text-4xl font-black mb-6 italic text-transparent bg-clip-text bg-gradient-to-r from-stone-400 to-red-400 group-hover:text-stone-500 transition-colors">
-
-
-
                                 CROWD PSYCHOLOGY</h3>
-
-
-
-                            <p class="text-sm bear-text-muted leading-relaxed italic">Sentiment extremes, euphoria
-
-
-
+                            <p class="text-sm text-gray-400 leading-relaxed italic">Sentiment extremes, euphoria
                                 detection, and capitulation timing indicators.</p>
-
-
-
                         </div>
-
-
-
                         <a href="/bear/crowd-psychology"
-
-
-
                             class="text-[11px] font-black text-stone-500 hover:tracking-[0.2em] transition-all uppercase underline decoration-2 underline-offset-8">Read_Crowd
-
-
-
                             →</a>
-
-
-
                     </div>
-
-
-
                 </div>
-
-
-
-
-
-
 
                 <!-- Pillar 06: Capital Preservation -->
-
-
-
-                <div class="group relative overflow-hidden bear-bg-card border bear-border-accent p-10 hover:bear-bg-alt hover:border-emerald-600/50 transition-all cursor-pointer rounded-[2rem] shadow-xl shadow-emerald-950/20 hover:-translate-y-2 animate-fade-in-up"
-
-
-
+                <div class="group relative overflow-hidden bg-[#0a0c0e] border border-emerald-900/20 p-10 hover:bg-[#0f1113] hover:border-emerald-600/50 transition-all cursor-pointer rounded-[2rem] shadow-xl shadow-emerald-950/20 hover:-translate-y-2 animate-fade-in-up"
                     style="animation-delay: 0.8s;">
-
-
-
-                    <div class="absolute top-0 right-0 p-6 opacity-20 text-[10px] bear-text-dim font-black">RISK_006
-
-
-
+                    <div class="absolute top-0 right-0 p-6 opacity-20 text-[10px] text-gray-500 font-black">RISK_006
                     </div>
-
-
-
                     <div class="flex flex-col h-full justify-between min-h-[320px]">
-
-
-
                         <div>
-
-
-
                             <div class="text-emerald-500 text-[10px] font-black mb-4 tracking-[0.3em]">LAYER_06 //
-
-
-
                                 PRESERVATION</div>
-
-
-
                             <h3
-
-
-
                                 class="text-4xl font-black mb-6 italic text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-red-400 group-hover:text-emerald-500 transition-colors">
-
-
-
                                 CAPITAL PRESERVATION</h3>
-
-
-
-                            <p class="text-sm bear-text-muted leading-relaxed italic">Drawdown management, hedging
-
-
-
+                            <p class="text-sm text-gray-400 leading-relaxed italic">Drawdown management, hedging
                                 strategies, and safe haven allocation frameworks.</p>
-
-
-
                         </div>
-
-
-
                         <a href="/bear/capital-preservation"
-
-
-
                             class="text-[11px] font-black text-emerald-500 hover:tracking-[0.2em] transition-all uppercase underline decoration-2 underline-offset-8">Protect_Capital
-
-
-
                             →</a>
-
-
-
                     </div>
-
-
-
                 </div>
-
-
-
             </div>
-
-
-
         </div>
-
-
-
-
-
-
 
         <style>
-
-
-
             @keyframes fadeInUp {
-
-
-
                 from {
-
-
-
                     opacity: 0;
-
-
-
                     transform: translateY(20px);
-
-
-
                 }
-
-
-
-
-
-
 
                 to {
-
-
-
                     opacity: 1;
-
-
-
                     transform: translateY(0);
-
-
-
                 }
-
-
-
             }
-
-
-
-
-
-
 
             .animate-fade-in-up {
-
-
-
                 animation: fadeInUp 0.6s ease-out forwards;
-
-
-
                 opacity: 0;
-
-
-
             }
-
-
-
-
-
-
 
             @keyframes spin-slow {
-
-
-
                 from {
-
-
-
                     transform: rotate(0deg);
-
-
-
                 }
-
-
-
-
-
-
 
                 to {
-
-
-
                     transform: rotate(360deg);
-
-
-
                 }
-
-
-
             }
-
-
-
-
-
-
 
             .animate-spin-slow {
-
-
-
                 animation: spin-slow 8s linear infinite;
-
-
-
             }
-
-
-
-
-
-
 
             @keyframes blink {
-
-
-
                 50% {
-
-
-
                     opacity: 0;
-
-
-
                 }
-
-
-
             }
-
-
-
-
-
-
 
             .blinking-cursor {
-
-
-
                 animation: blink 1s step-end infinite;
-
-
-
             }
-
-
-
         </style>
-
-
-
         <script>
-
-
-
             document.addEventListener('DOMContentLoaded', () => {
-
-
-
                 const observerOptions = {
-
-
-
                     root: null,
-
-
-
                     rootMargin: '0px',
-
-
-
                     threshold: 0.1
-
-
-
                 };
 
-
-
-
-
-
-
                 const observer = new IntersectionObserver((entries, observer) => {
-
-
-
                     entries.forEach(entry => {
-
-
-
                         if (entry.isIntersecting) {
-
-
-
                             // Counter animation
-
-
-
                             const counters = entry.target.querySelectorAll('[data-counter-target]');
-
-
-
                             counters.forEach(counter => {
-
-
-
                                 const target = parseInt(counter.dataset.counterTarget);
-
-
-
                                 let current = 0;
-
-
-
                                 const increment = target / 100;
-
-
-
                                 const updateCounter = () => {
-
-
-
                                     if (current < target) {
-
-
-
                                         current += increment;
-
-
-
                                         counter.textContent = Math.ceil(current);
-
-
-
                                         requestAnimationFrame(updateCounter);
-
-
-
                                     } else {
-
-
-
                                         counter.textContent = target;
-
-
-
                                     }
-
-
-
                                 };
-
-
-
                                 updateCounter();
-
-
-
                             });
 
-
-
-
-
-
-
                             observer.unobserve(entry.target);
-
-
-
                         }
-
-
-
                     });
-
-
-
                 }, observerOptions);
 
-
-
-
-
-
-
                 const section = document.querySelector('section.py-32');
-
-
-
                 if (section) {
-
-
-
                     observer.observe(section);
-
-
-
                 }
-
-
-
             });
-
-
-
         </script>
-
-
-
     </section>
-
-
-
-
-
-
 
     <!-- 🧠 THREAT INTELLIGENCE DATABASE (DARK VERSION) -->
-
-
-
-    <section class="py-24 bear-bg-main border-b bear-border-accent relative overflow-hidden">
-
-
-
+    <section class="py-24 bg-[#030405] border-b border-red-900/20 relative overflow-hidden">
         <!-- Dark background glows -->
-
-
-
         <div
-
-
-
             class="absolute top-1/2 left-1/4 w-[500px] h-[500px] bg-red-900/10 rounded-full blur-[120px] -translate-y-1/2 animate-pulse-slow">
-
-
-
         </div>
-
-
-
         <div
-
-
-
             class="absolute top-1/2 right-1/4 w-[500px] h-[500px] bg-orange-900/10 rounded-full blur-[120px] -translate-y-1/2 animate-pulse-slower">
-
-
-
         </div>
-
-
-
-
-
-
 
         <div class="container mx-auto px-4 relative z-10">
-
-
-
             <div
-
-
-
-                class="bear-bg-card/80 border bear-border-accent p-12 md:p-16 relative overflow-hidden rounded-[3rem] shadow-2xl backdrop-blur-md">
-
-
-
+                class="bg-[#0a0c0e]/80 border border-red-900/20 p-12 md:p-16 relative overflow-hidden rounded-[3rem] shadow-2xl backdrop-blur-md">
                 <!-- Accent Gradient Bar -->
-
-
-
                 <div
-
-
-
                     class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-600 via-orange-600 to-amber-700 opacity-80">
-
-
-
                 </div>
 
-
-
-
-
-
-
                 <div
-
-
-
-                    class="absolute top-0 right-0 p-10 opacity-10 text-[10px] bear-text-dim font-black tracking-[1em] uppercase vertical-text">
-
-
-
+                    class="absolute top-0 right-0 p-10 opacity-10 text-[10px] text-gray-500 font-black tracking-[1em] uppercase vertical-text">
                     THREAT_REPOSITORY_V1.0</div>
-
-
-
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-
-
-
                     <div class="flex flex-col justify-center">
-
-
-
                         <div
-
-
-
                             class="inline-flex items-center gap-3 mb-6 px-4 py-2 bg-gradient-to-r from-red-900/20 to-orange-900/20 border border-red-600/20 rounded-full w-fit">
-
-
-
                             <span
-
-
-
                                 class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500 text-[10px] font-black tracking-widest uppercase italic">Defensive
-
-
-
                                 Intelligence Layer</span>
-
-
-
                         </div>
-
-
-
                         <h3
-
-
-
-                            class="text-5xl md:text-7xl font-black mb-10 italic tracking-tighter bear-text-main leading-[0.8] uppercase">
-
-
-
+                            class="text-5xl md:text-7xl font-black mb-10 italic tracking-tighter text-white leading-[0.8] uppercase">
                             Threat<br />
-
-
-
                             <span
-
-
-
                                 class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-amber-500">Database_</span>
-
-
-
                         </h3>
-
-
-
-                        <p class="text-base bear-text-muted mb-10 leading-relaxed max-w-md italic font-medium">
-
-
-
+                        <p class="text-base text-gray-400 mb-10 leading-relaxed max-w-md italic font-medium">
                             Access the open-source risk intelligence repository. 6 Pillars of defensive analysis. 0
-
-
-
                             Gates. Community-driven threat detection.
-
-
-
                         </p>
-
-
-
-
-
-
 
                         <!-- Stats Row -->
-
-
-
-                        <div class="grid grid-cols-2 gap-8 mb-10 border-t bear-border-accent pt-8">
-
-
-
+                        <div class="grid grid-cols-2 gap-8 mb-10 border-t border-red-900/20 pt-8">
                             <div>
-
-
-
-                                <div class="text-3xl font-black bear-text-main mb-1">{realisticStats.reportsPublished}</div>
-
-
-
-                                <div class="text-[10px] font-black bear-text-dim uppercase tracking-widest">Risk_Reports
-
-
-
+                                <div class="text-3xl font-black text-white mb-1">{realisticStats.reportsPublished}</div>
+                                <div class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Risk_Reports
                                 </div>
-
-
-
                             </div>
-
-
-
                             <div>
-
-
-
-                                <div class="text-3xl font-black bear-text-main mb-1">{realisticStats.riskFlags}</div>
-
-
-
-                                <div class="text-[10px] font-black bear-text-dim uppercase tracking-widest">Flags_Active
-
-
-
+                                <div class="text-3xl font-black text-white mb-1">{realisticStats.riskFlags}</div>
+                                <div class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Flags_Active
                                 </div>
-
-
-
                             </div>
-
-
-
                         </div>
-
-
-
-
-
-
 
                         <div class="flex gap-6">
-
-
-
                             <a href="/bear/blog"
-
-
-
                                 class="group relative px-10 py-4 bg-white text-black font-black uppercase text-sm tracking-widest transition-all text-center rounded-xl shadow-lg italic overflow-hidden">
-
-
-
-                                <span class="relative z-10 transition-colors group-hover:bear-text-main">Access_Threat_Feed
-
-
-
+                                <span class="relative z-10 transition-colors group-hover:text-white">Access_Threat_Feed
                                     →</span>
-
-
-
                                 <div
-
-
-
                                     class="absolute inset-0 bg-gradient-to-r from-red-600 via-orange-600 to-amber-700 opacity-0 group-hover:opacity-100 transition-opacity">
-
-
-
                                 </div>
-
-
-
                             </a>
-
-
-
                         </div>
-
-
-
                     </div>
-
-
-
-
-
-
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-
-
                         {BEAR_PILLARS.map((pillar, i) => {
-
-
-
                         const colorClasses = [
-
-
-
                         'border-red-600/20 text-red-500',
-
-
-
                         'border-amber-600/20 text-amber-500',
-
-
-
                         'border-rose-600/20 text-rose-500',
-
-
-
                         'border-orange-600/20 text-orange-500',
-
-
-
                         'border-stone-600/20 text-stone-500',
-
-
-
                         'border-emerald-600/20 text-emerald-500'
-
-
-
                         ];
-
-
-
                         const colorClass = colorClasses[i % colorClasses.length];
 
-
-
-
-
-
-
                         return (
-
-
-
-                        <a href={`/bear/${pillar.id}`} class={`p-6 border bear-border-accent hover:border-opacity-50
-
-
-
-                            text-[10px] font-black flex justify-between items-center group rounded-2xl bear-bg-alt
-
-
-
+                        <a href={`/bear/${pillar.id}`} class={`p-6 border border-red-900/20 hover:border-opacity-50
+                            text-[10px] font-black flex justify-between items-center group rounded-2xl bg-[#0f1113]
                             backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl
-
-
-
                             hover:shadow-red-950/30`}>
-
-
-
                             <span class={`font-black uppercase tracking-[0.2em] italic transition-colors ${pillar.text}
-
-
-
                                 opacity-90 group-hover:opacity-100`}>{pillar.name}</span>
-
-
-
                             <span class={`${colorClass.split(' ')[1]} group-hover:translate-x-1 transition-all`}>→</span>
-
-
-
                  </a>
-
-
-
                )
-
-
-
              })}
-
-
-
            </div>
-
-
-
          </div>
-
-
-
       </div>
-
-
-
     </div>
-
-
-
     
-
-
-
     <style>
-
-
-
       .vertical-text {
-
-
-
         writing-mode: vertical-rl;
-
-
-
         text-orientation: mixed;
-
-
-
       }
-
-
-
     </style>
-
-
-
   </section>
 
-
-
-
-
-
-
   <!-- 🛡️ DEFENSIVE MANDATE (THE CONTRARIAN MISSION) -->
-
-
-
-  <section id="defensive-mandate" class="py-24 bear-bg-main relative overflow-hidden border-b bear-border-accent">
-
-
-
+  <section id="defensive-mandate" class="py-24 bg-[#030405] relative overflow-hidden border-b border-red-900/20">
     <!-- Systematic Grid Background -->
-
-
-
     <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(#b91c1c 1px, transparent 1px), linear-gradient(90deg, #b91c1c 1px, transparent 1px); background-size: 40px 40px;"></div>
-
-
-
     
-
-
-
     <div class="container relative z-10 mx-auto px-4">
-
-
-
       <div class="max-w-4xl mx-auto">
-
-
-
         <div class="mb-16 text-center">
-
-
-
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-red-950/20 border border-red-800/30 mb-6">
-
-
-
-                 <span class="text-[10px] font-black bear-text-muted uppercase tracking-[0.3em]">Directive_001 // Contrarian_Mandate</span>
-
-
-
+                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Directive_001 // Contrarian_Mandate</span>
             </div>
-
-
-
-            <h2 class="text-5xl md:text-7xl font-black bear-text-main leading-[0.85] uppercase italic tracking-tighter mb-8">
-
-
-
+            <h2 class="text-5xl md:text-7xl font-black text-white leading-[0.85] uppercase italic tracking-tighter mb-8">
               In Bear Markets,<br/>
-
-
-
               <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-amber-500">
-
-
-
                 Intelligence Wins
-
-
-
               </span>
-
-
-
             </h2>
-
-
-
         </div>
-
-
-
-
-
-
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-
-
-
             <!-- Terminal Message -->
-
-
-
-            <div class="lg:col-span-7 bear-bg-card border bear-border-accent p-8 md:p-12 rounded-[2rem] relative overflow-hidden group">
-
-
-
+            <div class="lg:col-span-7 bg-[#0a0c0e] border border-red-900/20 p-8 md:p-12 rounded-[2rem] relative overflow-hidden group">
                 <div class="absolute top-0 right-0 p-6 text-[10px] font-black text-gray-600 tracking-widest uppercase vertical-text">CONTRARIAN_INTELLIGENCE</div>
-
-
-
                 <div class="flex items-center gap-3 mb-8">
-
-
-
                     <div class="w-2 h-2 rounded-full bg-red-500"></div>
-
-
-
-                    <span class="text-[10px] font-black bear-text-muted uppercase tracking-widest">Protocol_Input: Philosophy</span>
-
-
-
+                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Protocol_Input: Philosophy</span>
                 </div>
-
-
-
                 <div class="space-y-6">
-
-
-
-                    <p class="text-2xl font-black italic bear-text-main leading-tight">
-
-
-
+                    <p class="text-2xl font-black italic text-white leading-tight">
                         "The crowd is always wrong at extremes. We build systems to detect <span class="text-red-500">euphoria, fraud, and structural risk</span>—before the market corrects."
-
-
-
                     </p>
-
-
-
-                    <p class="text-lg bear-text-muted italic font-medium">
-
-
-
+                    <p class="text-lg text-gray-400 italic font-medium">
                         Preservation isn&apos;t passive. It&apos;s the highest form of active management when <span
-
-
-
-                                class="bear-text-main underline">capital destruction</span> is the market&apos;s primary vector.
-
-
-
+                                class="text-white underline">capital destruction</span> is the market&apos;s primary vector.
                     </p>
-
-
-
                     </div>
-
-
-
                 </div>
-
-
-
-
-
-
 
                 <!-- Defensive Directives List -->
-
-
-
                 <div class="lg:col-span-5 flex flex-col gap-4">
-
-
-
                     {[
-
-
-
                         { id: ' DIR_01', label: 'CONTRARIAN_EDGE' , desc: 'Profit from the mistakes of the crowd.' ,
-
-
-
                                 color: 'text-red-500' }, { id: 'DIR_02' , label: 'RISK_FIRST' ,
-
-
-
                                 desc: 'We analyze what can go wrong, not just what can go right.' ,
-
-
-
                                 color: 'text-orange-500' }, { id: 'DIR_03' , label: 'TRANSPARENT_WARNINGS' ,
-
-
-
                                 desc: 'Public threat intelligence, no paywalls for critical alerts.' ,
-
-
-
                                 color: 'text-amber-500' } ].map(dir=> (
-
-
-
                                 <div
-
-
-
-                                    class="border bear-border-accent p-6 rounded-2xl hover:bear-bg-alt transition-all group">
-
-
-
+                                    class="border border-red-900/20 p-6 rounded-2xl hover:bg-[#0f1113] transition-all group">
                                     <div class="flex justify-between items-center mb-2">
-
-
-
                                         <span
-
-
-
                                             class="text-[8px] font-black text-red-500 font-mono tracking-widest">{dir.id}</span>
-
-
-
                                         <div
-
-
-
                                             class="w-1 h-1 rounded-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-
-
-
                                         </div>
-
-
-
                                     </div>
-
-
-
-                                    <h4 class="text-sm font-black bear-text-main mb-1 uppercase tracking-wider italic">
-
-
-
+                                    <h4 class="text-sm font-black text-white mb-1 uppercase tracking-wider italic">
                                         {dir.label}</h4>
-
-
-
-                                    <p class="text-[10px] bear-text-dim font-medium italic">{dir.desc}</p>
-
-
-
+                                    <p class="text-[10px] text-gray-500 font-medium italic">{dir.desc}</p>
                                 </div>
-
-
-
                                 ))}
-
-
-
                     </div>
-
-
-
                 </div>
-
-
-
             </div>
-
-
-
         </div>
-
-
-
     </section>
-
-
-
-
-
-
 
     <!-- 🎯 CRITICAL THREAT ALERT (FEATURED) -->
-
-
-
-    <section class="py-24 bear-bg-main relative overflow-hidden border-b bear-border-accent">
-
-
-
+    <section class="py-24 bg-[#030405] relative overflow-hidden border-b border-red-900/20">
         <div class="container mx-auto px-4">
-
-
-
             <div class="flex items-center gap-4 mb-12 justify-center">
-
-
-
                 <div class="h-px bg-gradient-to-r from-transparent via-red-600/50 to-transparent flex-1 opacity-20">
-
-
-
                 </div>
-
-
-
                 <div class="text-center px-6">
-
-
-
                     <div
-
-
-
                         class="inline-flex items-center gap-2 mb-2 px-3 py-1 rounded-full bg-red-950/30 border border-red-600/30">
-
-
-
                         <span
-
-
-
                             class="text-[8px] font-black text-red-500 uppercase tracking-widest italic tracking-[0.4em]">⚠️
-
-
-
                             High_Priority_Threat_Alert ⚠️</span>
-
-
-
                     </div>
-
-
-
-                    <h2 class="text-3xl lg:text-5xl font-black bear-text-main uppercase italic tracking-tighter">
-
-
-
+                    <h2 class="text-3xl lg:text-5xl font-black text-white uppercase italic tracking-tighter">
                         Critical_<span
-
-
-
                             class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-amber-500">Intel</span>
-
-
-
                     </h2>
-
-
-
                 </div>
-
-
-
                 <div class="h-px bg-gradient-to-r from-transparent via-red-600/50 to-transparent flex-1 opacity-20">
-
-
-
                 </div>
-
-
-
             </div>
-
-
-
-
-
-
 
             <div class="max-w-6xl mx-auto">
-
-
-
                 <div
-
-
-
-                    class="bear-bg-card border bear-border-accent rounded-[3rem] overflow-hidden shadow-2xl relative group">
-
-
-
+                    class="bg-[#0a0c0e] border border-red-900/20 rounded-[3rem] overflow-hidden shadow-2xl relative group">
                     <!-- Folder Tab Effect -->
-
-
-
                     <div
-
-
-
-                        class="absolute top-0 right-12 px-6 py-2 bg-gradient-to-r from-red-600 to-orange-700 bear-text-main text-[10px] font-black uppercase tracking-widest rounded-b-xl z-20 shadow-lg">
-
-
-
-                        THREAT_ID: {featuredPost?.slug?.toUpperCase() || "RISK_001"}</div>
-
-
-
-
-
-
+                        class="absolute top-0 right-12 px-6 py-2 bg-gradient-to-r from-red-600 to-orange-700 text-white text-[10px] font-black uppercase tracking-widest rounded-b-xl z-20 shadow-lg">
+                        THREAT_ID: {featuredPost?.slug?.toUpperCase() || || "RISK_001"}</div>
 
                     <!-- Visual Container -->
-
-
-
                     <div class="lg:col-span-7 relative group">
-
-
-
                         <div
-
-
-
                             class="absolute -inset-4 bg-gradient-to-r from-red-600/20 via-orange-600/20 to-amber-700/20 rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-
-
-
                         </div>
-
-
-
-                        <div class="relative overflow-hidden rounded-[2.5rem] border bear-border-accent shadow-2xl">
-
-
-
-                            <img src={featuredPost.data.image || "/images/bear-placeholder.jpg" }
-
-
-
+                        <div class="relative overflow-hidden rounded-[2.5rem] border border-red-900/20 shadow-2xl">
+                            <img src={featuredPost.data.image || || "/images/bear-placeholder.jpg" }
                                 alt={featuredPost.data.title}
-
-
-
                                 class="w-full aspect-[16/10] object-cover transition-transform duration-700 group-hover:scale-105" />
-
-
-
                             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent">
-
-
-
                             </div>
-
-
-
-
-
-
 
                             <!-- Floating Metadata Info -->
-
-
-
                             <div class="absolute top-6 left-6 flex gap-3">
-
-
-
                                 <div
-
-
-
-                                    class="px-3 py-1 bg-black/80 backdrop-blur-md border border-red-600/30 rounded-lg text-[10px] font-black bear-text-main uppercase tracking-widest">
-
-
-
+                                    class="px-3 py-1 bg-black/80 backdrop-blur-md border border-red-600/30 rounded-lg text-[10px] font-black text-white uppercase tracking-widest">
                                     THREAT_LEVEL: ELEVATED
-
-
-
                                 </div>
-
-
-
                                 <div
-
-
-
-                                    class="px-3 py-1 bg-red-600 rounded-lg text-[10px] font-black bear-text-main uppercase tracking-widest">
-
-
-
+                                    class="px-3 py-1 bg-red-600 rounded-lg text-[10px] font-black text-white uppercase tracking-widest">
                                     AUTH: BEAR_DIV
-
-
-
                                 </div>
-
-
-
                             </div>
-
-
-
-
-
-
 
                             <!-- Content Overlay -->
-
-
-
                             <div class="absolute bottom-10 left-10 right-10">
-
-
-
                                 <div class="flex items-center gap-4 mb-4">
-
-
-
                                     <div class="flex flex-col">
-
-
-
                                         <span
-
-
-
                                             class="text-[8px] font-black text-red-400 uppercase tracking-widest mb-1">READ_TIME</span>
-
-
-
                                         <span
-
-
-
-                                            class="text-xs font-black bear-text-main uppercase tracking-widest">{featuredPost.data.readTime
-
-
-
+                                            class="text-xs font-black text-white uppercase tracking-widest">{featuredPost.data.readTime
                                             || 4} MIN_ANALYSIS</span>
-
-
-
                                     </div>
-
-
-
                                     <div class="w-px h-8 bg-white/20"></div>
-
-
-
                                     <div class="flex flex-col">
-
-
-
                                         <span
-
-
-
                                             class="text-[8px] font-black text-orange-400 uppercase tracking-widest mb-1">Risk_Score</span>
-
-
-
                                         <span
-
-
-
-                                            class="text-xs font-black bear-text-main uppercase tracking-widest">CRITICAL</span>
-
-
-
+                                            class="text-xs font-black text-white uppercase tracking-widest">CRITICAL</span>
                                     </div>
-
-
-
                                 </div>
-
-
-
                             </div>
-
-
-
                         </div>
-
-
-
                     </div>
-
-
-
-
-
-
 
                     <!-- Content Details -->
-
-
-
                     <div class="lg:col-span-5 flex flex-col justify-center p-8">
-
-
-
-                        <div class="mb-8 p-4 bear-bg-alt border bear-border-accent rounded-2xl">
-
-
-
-                            <p class="text-[10px] font-bold bear-text-muted uppercase tracking-[0.2em] leading-relaxed">
-
-
-
+                        <div class="mb-8 p-4 bg-[#0f1113] border border-red-900/20 rounded-2xl">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] leading-relaxed">
                                 #Systemic Risk #Macro Liquidity #Fraud Detection
-
-
-
                             </p>
-
-
-
                         </div>
 
-
-
-
-
-
-
                         <h2
-
-
-
-                            class="text-4xl md:text-5xl font-black bear-text-main mb-6 italic tracking-tighter leading-none uppercase">
-
-
-
+                            class="text-4xl md:text-5xl font-black text-white mb-6 italic tracking-tighter leading-none uppercase">
                             {featuredPost.data.title}
-
-
-
                         </h2>
 
-
-
-
-
-
-
-                        <p class="text-lg bear-text-muted mb-10 leading-relaxed italic font-medium">
-
-
-
-                            {featuredPost.data.description || "Critical threat assessment: Liquidity crisis indicators flashing red. Systemic contagion vectors identified across multiple protocols."}
-
-
-
+                        <p class="text-lg text-gray-400 mb-10 leading-relaxed italic font-medium">
+                            {featuredPost.data.description || "Critical threat assessment: Liquidity crisis indicators
+                            flashing red. Systemic contagion vectors identified across multiple protocols."}
                         </p>
-
-
-
-
-
-
 
                         <div class="flex flex-col gap-6">
-
-
-
                             <a href={`/bear/blog/${featuredPost.slug}`}
-
-
-
                                 class="group relative w-full py-5 bg-white text-black font-black uppercase text-sm tracking-[0.2em] italic rounded-2xl overflow-hidden shadow-2xl transition-all hover:-translate-y-1 text-center">
-
-
-
-                                <span class="relative z-10 group-hover:bear-text-main transition-colors">Analyze_Threat
-
-
-
+                                <span class="relative z-10 group-hover:text-white transition-colors">Analyze_Threat
                                     →</span>
-
-
-
                                 <div
-
-
-
                                     class="absolute inset-0 bg-gradient-to-r from-red-600 via-orange-600 to-amber-700 opacity-0 group-hover:opacity-100 transition-opacity">
-
-
-
                                 </div>
-
-
-
                             </a>
-
-
-
                             <div class="flex justify-between items-center px-4">
-
-
-
-                                <span class="text-[10px] font-black bear-text-dim">FORMAT: PDF/MD</span>
-
-
-
+                                <span class="text-[10px] font-black text-gray-500">FORMAT: PDF/MD</span>
                                 <span class="text-[10px] font-black text-green-600">// OPEN_SOURCE</span>
-
-
-
-                                <span class="text-[10px] font-black bear-text-dim">AUTH: BEAR_DIV</span>
-
-
-
+                                <span class="text-[10px] font-black text-gray-500">AUTH: BEAR_DIV</span>
                             </div>
-
-
-
                         </div>
-
-
-
                     </div>
-
-
-
                 </div>
-
-
-
             </div>
-
-
-
         </div>
-
-
-
     </section>
-
-
-
-
-
-
 
     <!-- 🔒 RESTRICTED THREAT MODULES (HIGH CLEARANCE) -->
-
-
-
-    <section id="restricted-threat-modules" class="py-24 bear-bg-main relative overflow-hidden">
-
-
-
+    <section id="restricted-threat-modules" class="py-24 bg-[#030405] relative overflow-hidden">
         <!-- Systematic Background -->
-
-
-
         <div class="absolute inset-0 opacity-[0.02]"
-
-
-
             style="background-image: radial-gradient(#b91c1c 1px, transparent 1px); background-size: 20px 20px;"></div>
 
-
-
-
-
-
-
         <div class="container mx-auto px-4 relative z-10">
-
-
-
             <div class="text-center mb-20">
-
-
-
                 <div
-
-
-
                     class="inline-flex items-center gap-3 mb-6 px-4 py-2 bg-red-950/20 border border-red-600/20 rounded-full">
-
-
-
                     <span class="text-red-500 text-[10px] font-black tracking-[0.4em] uppercase italic">Clearance:
-
-
-
                         Level_04_Required</span>
-
-
-
                 </div>
-
-
-
                 <h2
-
-
-
-                    class="text-5xl md:text-7xl font-black bear-text-main leading-none uppercase italic tracking-tighter mb-6">
-
-
-
+                    class="text-5xl md:text-7xl font-black text-white leading-none uppercase italic tracking-tighter mb-6">
                     Restricted_Threat_<span
-
-
-
                         class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Modules</span>
-
-
-
                 </h2>
-
-
-
-                <p class="text-lg bear-text-muted max-w-2xl mx-auto italic font-medium">Advanced threat intelligence for
-
-
-
+                <p class="text-lg text-gray-400 max-w-2xl mx-auto italic font-medium">Advanced threat intelligence for
                     verified institutional members.</p>
-
-
-
             </div>
-
-
-
-
-
-
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-6xl mx-auto">
-
-
-
                 <!-- Module 01: Insider Threat Intel -->
-
-
-
                 <div class="relative group">
-
-
-
                     <div
-
-
-
                         class="absolute inset-0 bg-gradient-to-br from-red-900/20 to-orange-900/20 rounded-[2.5rem] blur-2xl group-hover:blur-3xl transition-all duration-500">
-
-
-
                     </div>
-
-
-
                     <div
-
-
-
-                        class="relative bear-bg-card border bear-border-accent rounded-[2.5rem] p-10 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-
-
-
+                        class="relative bg-[#0a0c0e] border border-red-900/20 rounded-[2.5rem] p-10 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
                         <!-- Header Metadata -->
-
-
-
                         <div class="flex justify-between items-start mb-10">
-
-
-
                             <div>
-
-
-
                                 <div class="flex items-center gap-3 mb-3">
-
-
-
                                     <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-
-
-
                                     <span
-
-
-
                                         class="text-[10px] font-black text-red-500 tracking-widest uppercase italic">Node_ID:
-
-
-
                                         INSIDER_THREAT</span>
-
-
-
                                 </div>
-
-
-
                                 <h3
-
-
-
-                                    class="text-3xl font-black bear-text-main leading-tight uppercase italic tracking-tighter">
-
-
-
+                                    class="text-3xl font-black text-white leading-tight uppercase italic tracking-tighter">
                                     Insider Threat<br />Intelligence_</h3>
-
-
-
                             </div>
-
-
-
                             <div
-
-
-
-                                class="px-4 py-2 bg-gradient-to-r from-red-600 to-orange-700 rounded-lg bear-text-main font-black text-[10px] uppercase tracking-widest shadow-lg">
-
-
-
+                                class="px-4 py-2 bg-gradient-to-r from-red-600 to-orange-700 rounded-lg text-white font-black text-[10px] uppercase tracking-widest shadow-lg">
                                 MEMBER_CORE</div>
-
-
-
                         </div>
-
-
-
-
-
-
 
                         <!-- Content Grid -->
-
-
-
                         <div class="grid grid-cols-2 gap-4 mb-10">
-
-
-
                             {[
-
-
-
                             { label: 'Team_Forensics', icon: '🕵️' },
-
-
-
                             { label: 'Wallet_Surveillance', icon: '👁️' },
-
-
-
                             { label: 'Exit_Indicators', icon: '🚪' },
-
-
-
                             { label: 'Dark_Correlations', icon: '🌑' }
-
-
-
                             ].map(item => (
-
-
-
-                            <div class="flex items-center gap-3 bear-bg-alt p-4 rounded-xl border bear-border-accent">
-
-
-
+                            <div class="flex items-center gap-3 bg-[#0f1113] p-4 rounded-xl border border-red-900/20">
                                 <span class="text-lg">{item.icon}</span>
-
-
-
                                 <span
-
-
-
                                     class="text-[10px] font-black text-gray-300 uppercase tracking-wider">{item.label}</span>
-
-
-
                             </div>
-
-
-
                             ))}
-
-
-
                         </div>
 
-
-
-
-
-
-
-                        <div class="space-y-6 pt-6 border-t bear-border-accent">
-
-
-
+                        <div class="space-y-6 pt-6 border-t border-red-900/20">
                             <div
-
-
-
-                                class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest bear-text-dim">
-
-
-
+                                class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-gray-500">
                                 <span>Access_Path: THREAT_VAULT</span>
-
-
-
                                 <span class="text-red-500">ENCRYPTED</span>
-
-
-
                             </div>
-
-
-
                             <button onclick="document.getElementById('subscribe-popup').showModal()"
-
-
-
-                                class="w-full py-5 bg-white text-black font-black italic uppercase text-sm tracking-[0.2em] rounded-2xl hover:bg-gradient-to-r hover:from-red-600 hover:to-orange-700 hover:bear-text-main transition-all shadow-xl group/btn overflow-hidden relative">
-
-
-
+                                class="w-full py-5 bg-white text-black font-black italic uppercase text-sm tracking-[0.2em] rounded-2xl hover:bg-gradient-to-r hover:from-red-600 hover:to-orange-700 hover:text-white transition-all shadow-xl group/btn overflow-hidden relative">
                                 <span class="relative z-10">Unlock_Threat_Module →</span>
-
-
-
                             </button>
-
-
-
                         </div>
-
-
-
                     </div>
-
-
-
                 </div>
-
-
-
-
-
-
 
                 <!-- Module 02: Systemic Contagion -->
-
-
-
                 <div class="relative group">
-
-
-
                     <div
-
-
-
                         class="absolute inset-0 bg-gradient-to-br from-amber-900/20 to-red-900/20 rounded-[2.5rem] blur-2xl group-hover:blur-3xl transition-all duration-500">
-
-
-
                     </div>
-
-
-
                     <div
-
-
-
-                        class="relative bear-bg-card border bear-border-accent rounded-[2.5rem] p-10 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-
-
-
+                        class="relative bg-[#0a0c0e] border border-amber-900/20 rounded-[2.5rem] p-10 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
                         <!-- Header Metadata -->
-
-
-
                         <div class="flex justify-between items-start mb-10">
-
-
-
                             <div>
-
-
-
                                 <div class="flex items-center gap-3 mb-3">
-
-
-
                                     <div class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
-
-
-
                                     <span
-
-
-
                                         class="text-[10px] font-black text-amber-500 tracking-widest uppercase italic">Node_ID:
-
-
-
                                         CONTAGION_MAP</span>
-
-
-
                                 </div>
-
-
-
                                 <h3
-
-
-
-                                    class="text-3xl font-black bear-text-main leading-tight uppercase italic tracking-tighter">
-
-
-
+                                    class="text-3xl font-black text-white leading-tight uppercase italic tracking-tighter">
                                     Systemic<br />Contagion_</h3>
-
-
-
                             </div>
-
-
-
                             <div
-
-
-
-                                class="px-4 py-2 bg-gradient-to-r from-amber-600 to-red-700 rounded-lg bear-text-main font-black text-[10px] uppercase tracking-widest shadow-lg">
-
-
-
+                                class="px-4 py-2 bg-gradient-to-r from-amber-600 to-red-700 rounded-lg text-white font-black text-[10px] uppercase tracking-widest shadow-lg">
                                 MEMBER_CORE</div>
-
-
-
                         </div>
-
-
-
-
-
-
 
                         <!-- Content Grid -->
-
-
-
                         <div class="grid grid-cols-2 gap-4 mb-10">
-
-
-
                             {[
-
-
-
                             { label: 'Cross_Protocol_Risk', icon: '🕸️' },
-
-
-
                             { label: 'Liquidity_Cascades', icon: '🌊' },
-
-
-
                             { label: 'Leverage_Maps', icon: '⚖️' },
-
-
-
                             { label: 'Failure_Simulation', icon: '💥' }
-
-
-
                             ].map(item => (
-
-
-
-                            <div class="flex items-center gap-3 bear-bg-alt p-4 rounded-xl border bear-border-accent">
-
-
-
+                            <div class="flex items-center gap-3 bg-[#0f1113] p-4 rounded-xl border border-amber-900/20">
                                 <span class="text-lg">{item.icon}</span>
-
-
-
                                 <span
-
-
-
                                     class="text-[10px] font-black text-gray-300 uppercase tracking-wider">{item.label}</span>
-
-
-
                             </div>
-
-
-
                             ))}
-
-
-
                         </div>
 
-
-
-
-
-
-
-                        <div class="space-y-6 pt-6 border-t bear-border-accent">
-
-
-
+                        <div class="space-y-6 pt-6 border-t border-amber-900/20">
                             <div
-
-
-
-                                class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest bear-text-dim">
-
-
-
+                                class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-gray-500">
                                 <span>Access_Path: CONTAGION_HUB</span>
-
-
-
                                 <span class="text-amber-500">ENCRYPTED</span>
-
-
-
                             </div>
-
-
-
                             <button onclick="document.getElementById('subscribe-popup').showModal()"
-
-
-
-                                class="w-full py-5 bg-white text-black font-black italic uppercase text-sm tracking-[0.2em] rounded-2xl hover:bg-gradient-to-r hover:from-amber-600 hover:to-red-700 hover:bear-text-main transition-all shadow-xl group/btn overflow-hidden relative">
-
-
-
+                                class="w-full py-5 bg-white text-black font-black italic uppercase text-sm tracking-[0.2em] rounded-2xl hover:bg-gradient-to-r hover:from-amber-600 hover:to-red-700 hover:text-white transition-all shadow-xl group/btn overflow-hidden relative">
                                 <span class="relative z-10">Unlock_Threat_Module →</span>
-
-
-
                             </button>
-
-
-
                         </div>
-
-
-
                     </div>
-
-
-
                 </div>
-
-
-
             </div>
-
-
-
-
-
-
 
             <!-- OS Justification Row -->
-
-
-
             <div class="mt-20 max-w-4xl mx-auto">
-
-
-
                 <div
-
-
-
-                    class="bear-bg-card border bear-border-accent p-8 md:p-12 rounded-[2rem] relative overflow-hidden group">
-
-
-
+                    class="bg-[#0a0c0e] border border-red-900/20 p-8 md:p-12 rounded-[2rem] relative overflow-hidden group">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-
-
-
-                        {[ { id: 'SYS_01', label: 'TIME_SENSITIVE', desc: 'Threats that evolve too fast for public disclosure.', icon: '⚡', color: 'text-red-500' }, { id: 'SYS_02', label: 'INSIDER_INTELLIGENCE', desc: 'Private threat feeds & forensic audits.', icon: '🤫', color: 'text-orange-500' }, { id: 'SYS_03', label: 'CLEARANCE_REQUIRED', desc: 'Verified membership for restricted nodes.', icon: '🎯', color: 'text-amber-500' } ].map(item => (
-
-
-
+                        {[
+                        { id: 'SYS_01', label: 'TIME_SENSITIVE', desc: 'Threats that evolve too fast for public
+                        disclosure.', icon: '⚡', color: 'text-red-500' },
+                        { id: 'SYS_02', label: 'INSIDER_INTELLIGENCE', desc: 'Private threat feeds & forensic audits.',
+                        icon: '🤫', color: 'text-orange-500' },
+                        { id: 'SYS_03', label: 'CLEARANCE_REQUIRED', desc: 'Verified membership for restricted nodes.',
+                        icon: '🎯', color: 'text-amber-500' }
+                        ].map(item => (
                         <div class="flex flex-col items-center text-center group/item">
-
-
-
                             <div
-
-
-
-                                class="w-12 h-12 rounded-2xl bear-bg-alt flex items-center justify-center mb-6 group-hover/item:bg-gradient-to-br group-hover/item:from-red-900/30 group-hover/item:to-orange-900/30 transition-all shadow-sm border bear-border-accent">
-
-
-
+                                class="w-12 h-12 rounded-2xl bg-[#0f1113] flex items-center justify-center mb-6 group-hover/item:bg-gradient-to-br group-hover/item:from-red-900/30 group-hover/item:to-orange-900/30 transition-all shadow-sm border border-red-900/20">
                                 <span class="text-2xl">{item.icon}</span>
-
-
-
                             </div>
-
-
-
                             <span class={`text-[8px] font-black ${item.color} font-mono tracking-widest
-
-
-
                                 mb-3`}>{item.id}</span>
-
-
-
-                            <h4 class="text-xs font-black bear-text-main mb-2 uppercase italic tracking-wider">{item.label}
-
-
-
+                            <h4 class="text-xs font-black text-white mb-2 uppercase italic tracking-wider">{item.label}
                             </h4>
-
-
-
-                            <p class="text-[10px] bear-text-dim font-medium italic leading-relaxed">{item.desc}</p>
-
-
-
+                            <p class="text-[10px] text-gray-500 font-medium italic leading-relaxed">{item.desc}</p>
                         </div>
-
-
-
                         ))}
-
-
-
                     </div>
-
-
-
-                    <div class="mt-12 text-center pt-8 border-t bear-border-accent">
-
-
-
+                    <div class="mt-12 text-center pt-8 border-t border-red-900/20">
                         <p class="text-[9px] text-gray-600 font-black uppercase tracking-[0.6em] italic animate-pulse">
-
-
-
                             The_6_Foundational_Pillars_remain_100%_Free_Information_Sync_Active
-
-
-
                         </p>
-
-
-
                     </div>
-
-
-
                 </div>
-
-
-
             </div>
-
-
-
         </div>
-
-
-
     </section>
-
-
-
-
-
-
 
     <!-- 📚 LATEST THREAT FEED -->
-
-
-
-    <section class="py-24 bear-bg-main relative overflow-hidden border-b bear-border-accent">
-
-
-
+    <section class="py-24 bg-[#030405] relative overflow-hidden border-b border-red-900/20">
         <div class="container mx-auto px-4">
-
-
-
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-16 gap-6">
-
-
-
                 <div>
-
-
-
                     <div class="inline-flex items-center gap-2 mb-3">
-
-
-
                         <div class="w-1.5 h-1.5 rounded-full bg-red-500"></div>
-
-
-
-                        <span class="text-[10px] font-black bear-text-dim uppercase tracking-[0.4em]">Node:
-
-
-
+                        <span class="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em]">Node:
                             Threat_Discovery_Feed</span>
-
-
-
                     </div>
-
-
-
-                    <h2 class="text-4xl lg:text-5xl font-black bear-text-main uppercase italic tracking-tighter">
-
-
-
+                    <h2 class="text-4xl lg:text-5xl font-black text-white uppercase italic tracking-tighter">
                         Latest_Threat_<span
-
-
-
                             class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Intel</span>
-
-
-
                     </h2>
-
-
-
-                    <p class="bear-text-dim mt-2 font-medium italic">Fresh risk assessments published in real-time.</p>
-
-
-
+                    <p class="text-gray-500 mt-2 font-medium italic">Fresh risk assessments published in real-time.</p>
                 </div>
-
-
-
                 <a href="/bear/blog"
-
-
-
-                    class="px-8 py-3 bear-bg-alt hover:bg-[#1a1d21] border bear-border-accent bear-text-main text-[10px] font-black uppercase tracking-widest rounded-xl transition-all hover:-translate-y-0.5 shadow-sm">
-
-
-
+                    class="px-8 py-3 bg-[#0f1113] hover:bg-[#1a1d21] border border-red-900/20 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all hover:-translate-y-0.5 shadow-sm">
                     <span>📚</span> Open_Threat_Archives_
-
-
-
                 </a>
-
-
-
             </div>
-
-
-
             {latestPosts && latestPosts.length > 0 ? (
-
-
-
             <>
-
-
-
                 <Posts posts={latestPosts} className="mb-16" />
-
-
-
                 <div class="flex justify-center">
-
-
-
                     <Pagination currentPage={1} totalPages={Math.ceil(allPosts.length / 6)} />
-
-
-
                 </div>
-
-
-
             </>
-
-
-
             ) : (
-
-
-
-            <div class="text-center py-20 border border-dashed bear-border-accent rounded-[2rem]">
-
-
-
+            <div class="text-center py-20 border border-dashed border-red-900/20 rounded-[2rem]">
                 <div class="text-5xl mb-6 opacity-20 text-center">📖</div>
-
-
-
                 <h3 class="text-2xl font-black text-gray-700 uppercase italic tracking-tighter mb-4">No_Threats_Detected
-
-
-
                 </h3>
-
-
-
                 <p class="text-gray-600 font-medium italic">Scanning for new risk intelligence...</p>
-
-
-
             </div>
-
-
-
             )}
-
-
-
         </div>
-
-
-
     </section>
-
-
-
-
-
-
 
     <!-- 🎁 FINAL DEFENSIVE CTA -->
-
-
-
-    <section class="py-24 bear-bg-main relative overflow-hidden">
-
-
-
+    <section class="py-24 bg-[#030405] relative overflow-hidden">
         <!-- Final Glow -->
-
-
-
         <div
-
-
-
             class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-red-900/20 rounded-full blur-[120px] pointer-events-none">
-
-
-
         </div>
-
-
-
-
-
-
 
         <div class="container mx-auto px-4 relative z-10">
-
-
-
             <div class="max-w-4xl mx-auto">
-
-
-
                 <div
-
-
-
-                    class="bear-bg-card border bear-border-accent rounded-[3rem] p-10 lg:p-16 text-center relative overflow-hidden shadow-2xl group">
-
-
-
+                    class="bg-[#0a0c0e] border border-red-900/20 rounded-[3rem] p-10 lg:p-16 text-center relative overflow-hidden shadow-2xl group">
                     <!-- Terminal Frame Accents -->
-
-
-
                     <div
-
-
-
                         class="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-red-600/30 rounded-tl-[3rem]">
-
-
-
                     </div>
-
-
-
                     <div
-
-
-
                         class="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-orange-600/30 rounded-br-[3rem]">
-
-
-
                     </div>
-
-
-
-
-
-
 
                     <div class="relative z-10">
-
-
-
                         <div class="inline-flex items-center gap-3 mb-8">
-
-
-
                             <div
-
-
-
-                                class="w-12 h-12 rounded-2xl bear-bg-alt flex items-center justify-center shadow-lg border bear-border-accent">
-
-
-
+                                class="w-12 h-12 rounded-2xl bg-[#0f1113] flex items-center justify-center shadow-lg border border-red-900/20">
                                 <span class="text-3xl">🛡️</span>
-
-
-
                             </div>
-
-
-
                         </div>
-
-
-
-
-
-
 
                         <h2
-
-
-
-                            class="text-4xl md:text-6xl font-black bear-text-main mb-8 uppercase italic tracking-tighter leading-none">
-
-
-
-                            Protect Your Capital.<br />It&apos;s <span
-
-
-
+                            class="text-4xl md:text-6xl font-black text-white mb-8 uppercase italic tracking-tighter leading-none">
+                            Protect Your Capital.<br />It's <span
                                 class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500 animate-pulse">FREE.</span>
-
-
-
                         </h2>
-
-
-
-                        <p class="text-xl bear-text-muted mb-12 max-w-2xl mx-auto italic font-medium leading-relaxed">
-
-
-
+                        <p class="text-xl text-gray-400 mb-12 max-w-2xl mx-auto italic font-medium leading-relaxed">
                             No credit cards. No trials. No hidden tiers.
-
-
-
                             <span class="text-red-500 font-black">Just high-fidelity threat intelligence</span> for
-
-
-
                             everyone protecting capital in bear markets.
-
-
-
                         </p>
 
-
-
-
-
-
-
                         <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
-
-
-
                             <a href="/bear/blog"
-
-
-
                                 class="group relative px-12 py-5 bg-white text-black font-black uppercase text-sm tracking-[0.2em] italic rounded-2xl overflow-hidden shadow-2xl transition-all hover:-translate-y-1">
-
-
-
-                                <span class="relative z-10 group-hover:bear-text-main transition-colors">Access_Threat_Feed
-
-
-
+                                <span class="relative z-10 group-hover:text-white transition-colors">Access_Threat_Feed
                                     ⚡</span>
-
-
-
                                 <div
-
-
-
                                     class="absolute inset-0 bg-gradient-to-r from-red-600 via-orange-600 to-amber-700 opacity-0 group-hover:opacity-100 transition-opacity">
-
-
-
                                 </div>
-
-
-
                             </a>
-
-
-
                             <div class="flex flex-col items-start text-left">
-
-
-
                                 <p
-
-
-
-                                    class="text-[10px] bear-text-dim font-bold uppercase tracking-widest mb-1 flex items-center gap-2">
-
-
-
+                                    class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1 flex items-center gap-2">
                                     <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-
-
-
                                     {realisticStats.defensiveNodes} NODES_ACTIVE
-
-
-
                                 </p>
-
-
-
                                 <p class="text-[8px] text-gray-600 font-mono tracking-widest">v1.0_DEFENSIVE_REL</p>
-
-
-
                             </div>
-
-
-
                         </div>
 
-
-
-
-
-
-
-                        <div class="mt-16 pt-8 border-t bear-border-accent opacity-50">
-
-
-
+                        <div class="mt-16 pt-8 border-t border-red-900/20 opacity-50">
                             <p class="text-[8px] text-gray-600 font-mono uppercase tracking-[0.4em] leading-relaxed">
-
-
-
                                 Disclaimer: Not_Financial_Advice // Markets_Involve_Risk // DYOR // Division:
-
-
-
                                 BEAR_INTELLIGENCE
-
-
-
                             </p>
-
-
-
                         </div>
-
-
-
                     </div>
-
-
-
                 </div>
-
-
-
             </div>
-
-
-
         </div>
-
-
-
     </section>
 
-
-
-
-
-
-
     <!-- NEWSLETTER POPUP (Same as bull but with bear styling) -->
-
-
-
     <dialog id="subscribe-popup"
-
-
-
         style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px; border: none; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 500px; width: 90%; background: linear-gradient(135deg, #0a0c0e 0%, #030405 100%); color: white; z-index: 9999; margin: 0; border: 1px solid #b91c1c;">
-
-
-
         <div style="text-align: center; padding: 20px;">
-
-
-
             <div style="font-size: 48px; margin-bottom: 16px;">🛡️</div>
-
-
-
             <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 12px; color: #ef4444; text-align: center;">
-
-
-
                 Stay Ahead of Threats</h2>
-
-
-
             <p style="color: #9ca3af; margin-bottom: 20px; line-height: 1.5; text-align: center;">Get critical risk
-
-
-
                 alerts, fraud warnings & defensive strategies.<br><span style="color: #ef4444; font-weight: 600;">Free
-
-
-
                     threat intelligence, no spam.</span></p>
-
-
-
             <script async src="https://subscribe-forms.beehiiv.com/embed.js"></script>
-
-
-
             <iframe src="https://subscribe-forms.beehiiv.com/62d85daa-7878-4a83-a78a-a15f6226c516" class="beehiiv-embed"
-
-
-
                 data-test-id="beehiiv-embed" frameborder="0" scrolling="no"
-
-
-
                 style="width: 508px; height: 198px; margin: 0; border-radius: 0px !important; background-color: transparent; box-shadow: 0 0 #0000; max-width: 100%;"></iframe>
-
-
-
             <button id="close-popup"
-
-
-
                 style="margin-top: 20px; padding: 10px 20px; background: #1f2937; color: #9ca3af; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.2s ease;">Close</button>
-
-
-
         </div>
-
-
-
     </dialog>
 
-
-
-
-
-
-
     <script>
-
-
-
         document.addEventListener('DOMContentLoaded', () => {
-
-
-
             const popup = document.getElementById('subscribe-popup');
-
-
-
             const closeButton = document.getElementById('close-popup');
-
-
-
             let popupShown = false;
-
-
-
             function showPopup() {
-
-
-
                 if (!popupShown && !localStorage.getItem('popupShownToday')) {
-
-
-
                     popup.showModal();
-
-
-
                     popupShown = true;
-
-
-
                     localStorage.setItem('popupShownToday', new Date().toISOString());
-
-
-
                 }
-
-
-
             }
-
-
-
             setTimeout(showPopup, 30000);
-
-
-
             if (closeButton) {
-
-
-
                 closeButton.addEventListener('click', () => popup.close());
-
-
-
             }
-
-
-
         });
-
-
-
     </script>
 
-
-
-
-
-
-
     <style>
-
-
-
         /* ===== BEAR THEME DEFAULTS ===== */
+        body {
+            background-color: #030405;
+            color: #d1d5db;
+        }
 
-
-
-        body { background-color: var(--color-bear-bg); color: var(--color-bear-text); }
-
-
-
-
-
-
-
-        .bg-body { background-color: var(--color-bear-bg); }
-
-
-
-
-
-
+        .bg-body {
+            background-color: #030405;
+        }
 
         /* All cards use dark background */
-
-
-
-        .bg-white, .dark\:bg-black { background-color: var(--color-bear-bg-card) !important; }
-
-
-
-
-
-
+        .bg-white,
+        .dark\:bg-black {
+            background-color: #0a0c0e !important;
+        }
 
         /* Text defaults */
-
-
-
         h1,
-
-
-
         h2,
-
-
-
         h3,
-
-
-
         h4,
-
-
-
         h5,
-
-
-
         h6 {
-
-
-
             color: white;
-
-
-
         }
-
-
-
-
-
-
 
         /* Animations */
-
-
-
         @keyframes pulse-slow {
 
-
-
-
-
-
-
             0%,
-
-
-
             100% {
-
-
-
                 opacity: 0.03;
-
-
-
             }
-
-
-
-
-
-
 
             50% {
-
-
-
                 opacity: 0.08;
-
-
-
             }
-
-
-
         }
-
-
-
-
-
-
 
         @keyframes pulse-slower {
 
-
-
-
-
-
-
             0%,
-
-
-
             100% {
-
-
-
                 opacity: 0.02;
-
-
-
             }
-
-
-
-
-
-
 
             50% {
-
-
-
                 opacity: 0.05;
-
-
-
             }
-
-
-
         }
-
-
-
-
-
-
 
         .animate-pulse-slow {
-
-
-
             animation: pulse-slow 6s ease-in-out infinite;
-
-
-
         }
-
-
-
-
-
-
 
         .animate-pulse-slower {
-
-
-
             animation: pulse-slower 8s ease-in-out infinite;
-
-
-
         }
-
-
-
-
-
-
 
         /* Smooth transitions */
-
-
-
         * {
-
-
-
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-
-
-
         }
-
-
-
-
-
-
 
         .line-clamp-1 {
-
-
-
             overflow: hidden;
-
-
-
             display: -webkit-box;
-
-
-
             -webkit-box-orient: vertical;
-
-
-
             -webkit-line-clamp: 1;
-
-
-
         }
-
-
-
-
-
-
 
         .line-clamp-2 {
-
-
-
             overflow: hidden;
-
-
-
             display: -webkit-box;
-
-
-
             -webkit-box-orient: vertical;
-
-
-
             -webkit-line-clamp: 2;
-
-
-
         }
-
-
-
     </style>
-
-
-
     </Base>

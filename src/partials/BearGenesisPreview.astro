@@ -1,0 +1,154 @@
+---
+// src/partials/BearGenesisPreview.astro
+---
+
+<!-- 🛡️ BEAR GENESIS TERMINAL - DEFENSIVE INTELLIGENCE DIVISION -->
+<section class="relative py-32 overflow-hidden bear-bg-main border-b bear-border-accent">
+    <!-- Darker, more menacing background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-[#030405] via-[#050708] to-[#0a0c0e]"></div>
+    
+    <!-- Threat grid overlay -->
+    <div class="absolute inset-0 opacity-5" style="background-image: 
+        linear-gradient(#b91c1c 1px, transparent 1px),
+        linear-gradient(90deg, #b91c1c 1px, transparent 1px);
+        background-size: 50px 50px;">
+    </div>
+    
+    <!-- Blood glow orbs -->
+    <div class="absolute top-20 left-20 w-96 h-96 bg-red-900/20 rounded-full blur-[100px]"></div>
+    <div class="absolute bottom-20 right-20 w-96 h-96 bg-orange-900/20 rounded-full blur-[100px]"></div>
+    
+    <!-- Warning scanlines -->
+    <div class="absolute inset-0 opacity-[0.02] pointer-events-none" style="background: repeating-linear-gradient(0deg, rgba(185, 28, 28, 0.1) 0px, rgba(185, 28, 28, 0.1) 2px, transparent 2px, transparent 4px);"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-5xl mx-auto">
+            <!-- Header with threat level -->
+            <div class="flex justify-between items-center mb-12 border bear-border-accent bear-bg-card/50 backdrop-blur-sm p-4 rounded-2xl">
+                <div class="flex items-center gap-4">
+                    <div class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></div>
+                    <span class="text-[10px] font-black text-red-500 uppercase tracking-[0.3em]">BEAR_DIV // ACTIVE</span>
+                </div>
+                <div class="flex gap-6">
+                    <div class="flex items-center gap-2">
+                        <span class="text-[8px] font-black bear-text-dim uppercase">Threat_Level</span>
+                        <span class="text-xs font-black text-red-500">ELEVATED</span>
+                    </div>
+                    <div class="w-px h-4 bg-red-900/30"></div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[8px] font-black bear-text-dim uppercase">Nodes_Online</span>
+                        <span class="text-xs font-black text-orange-500">850</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Terminal Display -->
+            <div class="relative group">
+                <!-- Glow effect on hover -->
+                <div class="absolute -inset-1 bg-gradient-to-r from-red-600/20 via-orange-600/20 to-amber-700/20 rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                
+                <div class="relative bear-bg-card border-2 border-red-900/30 rounded-[3rem] p-1 shadow-2xl">
+                    <div class="rounded-[2.8rem] overflow-hidden">
+                        <!-- Terminal Header -->
+                        <div class="bear-bg-main px-8 py-4 flex items-center justify-between border-b bear-border-accent">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-red-600"></div>
+                                <div class="w-3 h-3 rounded-full bg-orange-600"></div>
+                                <div class="w-3 h-3 rounded-full bg-amber-700"></div>
+                                <span class="ml-4 text-[10px] font-mono bear-text-dim">bear@txchyon:~$</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="text-[8px] font-black text-red-500 uppercase tracking-widest">DEFENSIVE_OS_v1.0</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Terminal Content -->
+                        <div class="p-12 md:p-16 bear-bg-terminal">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                                <div>
+                                    <!-- Warning Badge -->
+                                    <div class="inline-flex items-center gap-2 mb-8 px-4 py-2 bg-red-950/30 border border-red-600/30 rounded-full">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span>
+                                        <span class="text-[10px] font-black text-red-400 uppercase tracking-[0.3em]">⚠️ SYSTEM WARNING ⚠️</span>
+                                    </div>
+                                    
+                                    <h1 class="text-6xl md:text-8xl font-black bear-text-main leading-[0.8] mb-8 uppercase italic tracking-tighter">
+                                        Txchyon
+                                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-orange-600 to-amber-700">BEAR</span>
+                                    </h1>
+                                    
+                                    <p class="text-xl bear-text-muted mb-10 leading-relaxed italic font-medium border-l-4 border-red-600 pl-6">
+                                        "The market's greatest risk is the certainty of the crowd. We analyze what others ignore."
+                                    </p>
+                                    
+                                    <!-- Stats Row -->
+                                    <div class="flex gap-8 mb-10">
+                                        <div>
+                                            <div class="text-2xl font-black bear-text-main mb-1">230+</div>
+                                            <div class="text-[8px] font-black bear-text-dim uppercase tracking-widest">Active_Threats</div>
+                                        </div>
+                                        <div class="w-px h-10 bg-red-900/30"></div>
+                                        <div>
+                                            <div class="text-2xl font-black bear-text-main mb-1">6</div>
+                                            <div class="text-[8px] font-black bear-text-dim uppercase tracking-widest">Defensive_Pillars</div>
+                                        </div>
+                                        <div class="w-px h-10 bg-red-900/30"></div>
+                                        <div>
+                                            <div class="text-2xl font-black bear-text-main mb-1">24/7</div>
+                                            <div class="text-[8px] font-black bear-text-dim uppercase tracking-widest">Risk_Monitoring</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex gap-4">
+                                        <a href="#risk-assessment" class="group relative px-10 py-5 bg-white text-black font-black uppercase text-sm tracking-[0.2em] italic rounded-2xl overflow-hidden shadow-2xl transition-all hover:-translate-y-1">
+                                            <span class="relative z-10 group-hover:bear-text-main">Assess_Risk →</span>
+                                            <div class="absolute inset-0 bg-gradient-to-r from-red-600 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        </a>
+                                        <a href="/bear/blog" class="px-10 py-5 border-2 border-red-600/50 bear-text-main font-black uppercase text-sm tracking-[0.2em] italic rounded-2xl hover:bg-red-600/20 transition-all hover:-translate-y-1">
+                                            Threat_Feed
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <!-- Right side - Threat Console -->
+                                <div class="bear-bg-main border border-red-900/30 rounded-2xl p-6 font-mono">
+                                    <div class="flex items-center gap-2 mb-4 pb-4 border-b bear-border-accent">
+                                        <div class="w-2 h-2 rounded-full bg-red-600"></div>
+                                        <span class="text-[10px] bear-text-muted">threat_console@bear:~/active$</span>
+                                    </div>
+                                    <div class="space-y-3 text-[11px]">
+                                        <div class="flex justify-between items-center text-red-400">
+                                            <span>⟹ SYSTEMIC_RISK.DETECT</span>
+                                            <span class="bear-text-dim">[CRITICAL]</span>
+                                        </div>
+                                        <div class="flex justify-between items-center text-orange-400">
+                                            <span>⟹ LIQUIDITY_CONTRACTION</span>
+                                            <span class="bear-text-dim">[HIGH]</span>
+                                        </div>
+                                        <div class="flex justify-between items-center text-amber-400">
+                                            <span>⟹ FRAUD_FLAG.TEAM_WALLET</span>
+                                            <span class="bear-text-dim">[ELEVATED]</span>
+                                        </div>
+                                        <div class="flex justify-between items-center text-stone-400">
+                                            <span>⟹ CROWD_EUPHORIA.PEAK</span>
+                                            <span class="bear-text-dim">[WARNING]</span>
+                                        </div>
+                                        <div class="pt-4 mt-4 border-t bear-border-accent bear-text-dim">
+                                            <span class="text-green-600">$</span> analyzing 847 protocols...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Terminal Footer -->
+                        <div class="bear-bg-main px-8 py-3 border-t bear-border-accent flex justify-between text-[8px] font-mono text-gray-600">
+                            <span>🔒 ENCRYPTED CONNECTION // BEAR_DIV v1.0 // 24 ACTIVE THREATS</span>
+                            <span>CONTRARIAN OS // CAPITAL PRESERVATION MODE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
