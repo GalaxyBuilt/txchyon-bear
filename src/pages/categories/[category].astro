@@ -1,0 +1,82 @@
+---
+// src/pages/categories/[category].astro
+import { getCollection } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import { CATEGORY_HIERARCHY } from '@/lib/categories';
+import Posts from "@/layouts/components/Posts.astro";
+
+// Generate paths for all 6 bear categories
+export async function getStaticPaths() {
+  const categories = Object.keys(CATEGORY_HIERARCHY);
+  return categories.map(category => ({
+    params: { category }
+  }));
+}
+
+const { category } = Astro.params;
+
+// Get all posts for this category/pillar
+const allPosts = await getCollection('posts');
+const categoryPosts = allPosts
+  .filter(post => !post.data.draft && post.data.pillar === category)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const categoryData = CATEGORY_HIERARCHY[category as keyof typeof CATEGORY_HIERARCHY];
+---
+
+<Base 
+  title={`${categoryData?.name || category} // intelligence_cluster // Txchyon Bear`}
+  description={`Tactical research and systemic risk analysis for ${categoryData?.name || category}. Defensive intelligence briefing for high-risk regimes.`}
+>
+  <section class="min-h-screen dark:bg-[#050607] bg-white py-24 relative overflow-hidden font-mono">
+    <!-- Grid Overlay -->
+    <div class="absolute inset-0 dark:bg-[radial-gradient(#ff333308_1px,transparent_1px)] bg-[radial-gradient(#ff333305_1px,transparent_1px)] [background-size:32px_32px]"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+      <!-- Category Header -->
+      <header class="max-w-4xl mb-20 animate-fade-in">
+        <div class="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 mb-8 backdrop-blur-md">
+          <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+          <span class="text-[10px] font-black text-red-500 uppercase tracking-[0.2em]">Pillar_Node_Active</span>
+        </div>
+        
+        <div class="flex items-center gap-6 mb-8">
+          <span class="text-6xl filter drop-shadow-[0_0_15px_rgba(220,38,38,0.3)] transition-transform hover:scale-110 duration-500">{categoryData?.icon || '📁'}</span>
+          <h1 class="text-5xl md:text-7xl font-black dark:text-white text-gray-900 italic tracking-tighter uppercase leading-none">
+            {categoryData?.name || category}<span class="text-red-500">_</span>
+          </h1>
+        </div>
+        
+        {categoryData?.description && (
+          <p class="text-xl md:text-2xl dark:text-gray-400 text-gray-600 font-bold italic leading-relaxed max-w-2xl">
+            {categoryData.description}
+          </p>
+        )}
+        
+        <div class="mt-12 flex items-center gap-4 text-[11px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-widest border-t border-gray-100 dark:border-white/5 pt-8">
+          <span class="text-red-500">{categoryPosts.length}</span> 
+          <span>Active_Intels_Decrypted</span>
+          <div class="h-px w-24 bg-gradient-to-r from-red-600/30 to-transparent"></div>
+        </div>
+      </header>
+
+      <!-- Posts Grid -->
+      {categoryPosts.length > 0 ? (
+        <div class="mb-24">
+          <Posts posts={categoryPosts} className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" />
+        </div>
+      ) : (
+        <div class="relative py-24 rounded-[3rem] bg-gray-50/50 dark:bg-white/5 border border-dashed border-gray-200 dark:border-white/10 text-center max-w-2xl mx-auto backdrop-blur-sm">
+          <div class="text-6xl mb-6 opacity-30 italic font-black text-gray-400">404_VOID</div>
+          <h2 class="text-2xl font-black mb-3 dark:text-white text-gray-900 uppercase italic">Intel_Shortage</h2>
+          <p class="dark:text-gray-400 text-gray-600 font-bold italic mb-8">
+            No intelligence fragments detected in the "{categoryData?.name || category}" matrix at this time.
+          </p>
+          <a href="/bear/categories" class="inline-flex items-center gap-2 text-[10px] font-black uppercase text-red-500 tracking-widest hover:gap-4 transition-all">
+            Return_To_Pillar_Index <span>→</span>
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+</Base>

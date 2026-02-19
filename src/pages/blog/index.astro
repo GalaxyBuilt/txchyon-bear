@@ -1,0 +1,96 @@
+---
+// src/pages/blog/index.astro - Bear Research Cache
+import { getCollection } from 'astro:content';
+import Base from "@/layouts/Base.astro";
+import Posts from "@/layouts/components/Posts.astro";
+import Pagination from "@/layouts/components/Pagination.astro";
+import { CATEGORY_HIERARCHY } from '@/lib/categories';
+
+const allPostsRaw = await getCollection('posts', ({ data }) => !data.draft);
+
+// Filter for bear pillars only
+const bearPillars = Object.keys(CATEGORY_HIERARCHY);
+const bearPosts = allPostsRaw.filter(post => 
+    bearPillars.includes(post.data.pillar)
+);
+
+const sortedPosts = bearPosts.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const totalPages = Math.ceil(sortedPosts.length / 6);
+const currentPage = 1;
+const paginatedPosts = sortedPosts.slice(0, 6);
+---
+
+<Base 
+  title="Research Cache // Strategic Intelligence Repository // Txchyon Bear" 
+  description="The complete Txchyon Bear intelligence repository. Decrypted tactical research, systemic risk alerts, and defensive capital preservation playbooks.">
+
+  <section class="py-32 dark:bg-[#050607] bg-white font-mono relative overflow-hidden border-b border-gray-100 dark:border-white/5">
+    <!-- Red Grid Overlay -->
+    <div class="absolute inset-0 pointer-events-none z-0" style="background-image: radial-gradient(circle, #ff3333 1px, transparent 1px); background-size: 32px 32px; opacity: 0.05;"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="flex flex-col md:flex-row justify-between items-center md:items-end mb-20 gap-8">
+        <div class="animate-fade-in">
+          <div class="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 mb-6 backdrop-blur-md">
+            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+            <span class="text-[10px] font-black text-red-500 uppercase tracking-[0.2em]">Repository_Online // Cache_Decrypted</span>
+          </div>
+          <h1 class="text-5xl md:text-8xl font-black mb-6 tracking-tighter uppercase italic leading-[0.85] dark:text-white text-gray-900">
+            Research<br/><span class="text-red-600">Cache</span><span class="blinking-cursor">_</span>
+          </h1>
+          <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 tracking-[0.4em] uppercase">Tactical Intelligence Layer // Systemic Filter Active</p>
+        </div>
+
+        <!-- Terminal Stats -->
+        <div class="flex gap-8 text-[10px] font-black items-center text-gray-400 uppercase tracking-widest border border-gray-100 dark:border-white/10 p-6 rounded-2xl bg-gray-50/50 dark:bg-white/5 backdrop-blur-md">
+          <div class="flex flex-col gap-1 text-center">
+             <span class="opacity-50">Briefs</span>
+             <span class="text-red-500 text-lg">{sortedPosts.length}</span>
+          </div>
+          <div class="w-px h-8 bg-gray-200 dark:bg-white/10"></div>
+          <div class="flex flex-col gap-1 text-center">
+             <span class="opacity-50">Status</span>
+             <span class="text-green-500 text-lg">READY</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Feed -->
+      <div class="mb-24">
+        {sortedPosts.length > 0 ? (
+          <>
+            <Posts posts={paginatedPosts} className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" />
+            <div class="mt-16 flex justify-center">
+              <Pagination currentPage={currentPage} totalPages={totalPages} />
+            </div>
+          </>
+        ) : (
+          <div class="text-center py-32 border border-dashed border-gray-200 dark:border-white/10 rounded-[3rem] bg-gray-50/5 dark:bg-white/5">
+            <div class="text-6xl mb-6 opacity-20">📡</div>
+            <h3 class="text-2xl font-black dark:text-gray-600 text-gray-400 uppercase italic mb-4">Scanning_For_Data_Streams</h3>
+            <p class="dark:text-gray-700 text-gray-500 font-bold italic">No intelligence fragments recovered from the current sector.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <style>
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    .blinking-cursor {
+      animation: blink 1s step-end infinite;
+    }
+  </style>
+</Base>

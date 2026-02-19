@@ -18,7 +18,7 @@ const isBear = Astro.url.pathname.startsWith('/bear');
       <a href={isBear ? "/bear" : "/"} class="flex items-center space-x-3 group">
         <div class="relative">
           <img
-            src={isBear ? "/images/logo2.png" : "/images/logo.png"}
+            src="/bear/images/logo.png"
             alt="Txchyon"
             class="h-10 w-auto object-contain transition-transform group-hover:scale-110"
           />
@@ -26,7 +26,7 @@ const isBear = Astro.url.pathname.startsWith('/bear');
         </div>
         <div class="flex flex-col items-start leading-none">
           <span class="text-xl md:text-2xl font-black text-black dark:text-white uppercase italic tracking-tighter">
-            Txchyon {isBear ? <span class="text-red-600">Bear</span> : ""}
+            Txchyon {isBear ? <span class="text-red-600 ml-1">Bear</span> : ""}
           </span>
           <span class="text-[9px] font-bold text-gray-500 dark:text-gray-400 tracking-widest uppercase mt-0.5">
             {isBear ? "Defensive Intel" : "DeFi OS"}

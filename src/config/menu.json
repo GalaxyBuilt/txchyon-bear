@@ -5,11 +5,11 @@
       "dropdown": [
         {
           "name": "Project Omega (SOL)",
-          "url": "/omega"
+          "url": "/bear/omega"
         },
         {
           "name": "Project Ultima (Intel)",
-          "url": "/ultima"
+          "url": "/bear/ultima"
         },
         {
           "name": "Project Genesis (BTC)",
@@ -22,68 +22,63 @@
       "dropdown": [
         {
           "name": "Bearish Frameworks",
-          "url": "/categories/bearish-frameworks"
+          "url": "/bear/categories/bearish-frameworks"
         },
         {
           "name": "Capital Preservation",
-          "url": "/categories/capital-preservation"
+          "url": "/bear/categories/capital-preservation"
         },
         {
           "name": "Crowd Psychology",
-          "url": "/categories/crowd-psychology"
+          "url": "/bear/categories/crowd-psychology"
         },
         {
           "name": "Fraud Red Flags",
-          "url": "/categories/fraud-red-flags"
+          "url": "/bear/categories/fraud-red-flags"
         },
         {
           "name": "Macro Liquidity",
-          "url": "/categories/macro-liquidity"
+          "url": "/bear/categories/macro-liquidity"
         },
         {
           "name": "Systemic Risk",
-          "url": "/categories/systemic-risk"
+          "url": "/bear/categories/systemic-risk"
         },
         {
           "name": "View Pillars",
-          "url": "/categories"
+          "url": "/bear/categories"
         },
         {
           "name": "Research Cache",
-          "url": "/blog"
+          "url": "/bear/blog"
         }
       ]
     },
     {
       "name": "Growth",
-      "url": "/services"
+      "url": "/bear/services"
     },
     {
       "name": "Shop",
-      "url": "/shop"
-    },
-    {
-      "name": "Bull Side",
-      "url": "https://txchyon.com",
-      "external": true
+      "url": "/bear/shop"
     }
   ],
   "footer": [
     {
       "name": "Txchyon",
-      "url": "/"
+      "url": "/bear"
     },
     {
       "name": "Services",
-      "url": "/services"
+      "url": "/bear/services"
     },
     {
       "name": "Tools",
-      "url": "/tools"
+      "url": "/bear/tools"
     },
     {
       "name": "Newsletter",
-      "url": "/newsletter"
+      "url": "/bear/newsletter"
     },
     {
       "name": "Twitter",

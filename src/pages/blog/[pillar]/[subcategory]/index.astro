@@ -1,0 +1,104 @@
+---
+// src/pages/blog/[pillar]/[subcategory]/index.astro
+import { getCollection } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import { CATEGORY_HIERARCHY } from '@/lib/categories';
+import Posts from "@/layouts/components/Posts.astro";
+
+// Generate paths for all subcategories
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  
+  // Use a Map to track unique pillar/subcategory combinations
+  const pathsMap = new Map();
+  
+  posts.forEach(post => {
+    const { pillar, subcategory } = post.data;
+    const key = `${pillar}/${subcategory}`;
+    if (!pathsMap.has(key)) {
+      pathsMap.set(key, { pillar, subcategory });
+    }
+  });
+
+  return Array.from(pathsMap.values()).map(({ pillar, subcategory }) => ({
+    params: { pillar, subcategory }
+  }));
+}
+
+const { pillar, subcategory } = Astro.params;
+
+// Get all posts for this subcategory
+const allPosts = await getCollection('posts');
+const filteredPosts = allPosts
+  .filter(post => 
+    !post.data.draft && 
+    post.data.pillar === pillar && 
+    post.data.subcategory === subcategory
+  )
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const categoryData = CATEGORY_HIERARCHY[pillar as keyof typeof CATEGORY_HIERARCHY];
+const subcategoryName = categoryData?.subcategories[subcategory as keyof typeof categoryData.subcategories] || subcategory;
+---
+
+<Base 
+  title={`${subcategoryName} // ${categoryData?.name || pillar} // Txchyon Bear`}
+  description={`Specialized intelligence for ${subcategoryName} within the ${categoryData?.name || pillar} framework. Validated data streams for professional risk management.`}
+>
+  <section class="min-h-screen dark:bg-[#050607] bg-white py-24 relative overflow-hidden font-mono">
+    <!-- Grid Overlay -->
+    <div class="absolute inset-0 dark:bg-[radial-gradient(#ff333308_1px,transparent_1px)] bg-[radial-gradient(#ff333305_1px,transparent_1px)] [background-size:32px_32px]"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+      <!-- Subcategory Header -->
+      <header class="max-w-4xl mb-20 animate-fade-in">
+        <div class="flex flex-wrap items-center gap-3 mb-8">
+            <div class="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 backdrop-blur-md">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+              <span class="text-[10px] font-black text-red-500 uppercase tracking-[0.2em]">Sub_Cluster_Sync</span>
+            </div>
+            <div class="h-px w-12 bg-red-500/20"></div>
+            <div class="text-[10px] font-black text-gray-500 uppercase tracking-widest italic">
+                {pillar} / {subcategory}
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-6 mb-8">
+          <span class="text-6xl filter drop-shadow-[0_0_15px_rgba(220,38,38,0.3)]">{categoryData?.icon || '📂'}</span>
+          <h1 class="text-4xl md:text-6xl font-black dark:text-white text-gray-900 italic tracking-tighter uppercase leading-none">
+            {subcategoryName}<span class="text-red-500">_</span>
+          </h1>
+        </div>
+        
+        <p class="text-lg md:text-xl dark:text-gray-400 text-gray-600 font-bold italic leading-relaxed max-w-2xl">
+            Deep-dive intelligence mapping for <span class="text-red-500">{subcategoryName}</span> protocols. 
+            Isolating volatility vectors and structural weaknesses.
+        </p>
+        
+        <div class="mt-12 flex items-center gap-4 text-[11px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-widest border-t border-gray-100 dark:border-white/5 pt-8">
+          <span class="text-red-500">{filteredPosts.length}</span> 
+          <span>Data_Segments_Active</span>
+          <div class="h-px w-24 bg-gradient-to-r from-red-600/30 to-transparent"></div>
+        </div>
+      </header>
+
+      <!-- Posts Grid -->
+      {filteredPosts.length > 0 ? (
+        <div class="mb-24">
+          <Posts posts={filteredPosts} className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" />
+        </div>
+      ) : (
+        <div class="relative py-24 rounded-[3rem] bg-gray-50/50 dark:bg-white/5 border border-dashed border-gray-200 dark:border-white/10 text-center max-w-2xl mx-auto backdrop-blur-sm">
+          <div class="text-6xl mb-6 opacity-30 italic font-black text-gray-400">VOID_ZONE</div>
+          <h2 class="text-2xl font-black mb-3 dark:text-white text-gray-900 uppercase italic">Signal_Lost</h2>
+          <p class="dark:text-gray-400 text-gray-600 font-bold italic mb-8">
+            No active data streams found for "{subcategoryName}" in this sector.
+          </p>
+          <a href={`/bear/blog/${pillar}`} class="inline-flex items-center gap-2 text-[10px] font-black uppercase text-red-500 tracking-widest hover:gap-4 transition-all">
+            Return_To_Pillar_Base <span>→</span>
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+</Base>
