@@ -10,7 +10,7 @@ const {
   type = "website",
   publishedTime,
   author = config.metadata.meta_author,
-  section = "Crypto",
+  section = "Risk Analysis",
 } = Astro.props;
 
 const BASE = config.site.base_url;
@@ -60,12 +60,12 @@ const finalCanonical = canonical ?? `${BASE}${cleanPath}`;
     {publishedTime && <meta property="article:published_time" content={publishedTime} />}
     <meta property="article:author" content={author} />
     <meta property="article:section" content={section} />
-    <meta property="article:tag" content="DeFi" />
-    <meta property="article:tag" content="Crypto" />
-    <meta property="article:tag" content="Bitcoin" />
-    <meta property="article:tag" content="Alpha" />
-    <meta property="article:tag" content="Blockchain" />
-    <meta property="article:tag" content="Web3" />
+    <meta property="article:tag" content="Systemic Risk" />
+    <meta property="article:tag" content="Macro Liquidity" />
+    <meta property="article:tag" content="Capital Preservation" />
+    <meta property="article:tag" content="Bear Market" />
+    <meta property="article:tag" content="Risk Analysis" />
+    <meta property="article:tag" content="Institutional Research" />
   </>
 )}
 

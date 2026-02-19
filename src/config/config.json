@@ -1,6 +1,6 @@
 ﻿{
   "site": {
-    "title": "Txchyon Bear",
+    "title": "Defensive Intelligence Division",
     "base_url": "https://txchyon.com",
     "base_path": "/bear",
     "trailing_slash": false,
@@ -8,7 +8,7 @@
     "logo": false,
     "logo_width": "200",
     "logo_height": "34",
-    "logo_text": "Txchyon Bear"
+    "logo_text": "Defensive Intelligence"
   },
   "settings": {
     "pagination": 6
@@ -16,7 +16,7 @@
   "metadata": {
     "meta_author": "GalaxyBuilt",
     "meta_image": "/images/og-bear.png",
-    "meta_description": "Txchyon Bear: Defensive Intelligence & Systemic Risk Analysis. Institutional research for the next contraction."
+    "meta_description": "Defensive Intelligence Division: Systemic Risk Analysis & Capital Preservation. Institutional research for the next contraction."
   },
   "google_tag_manager": {
     "enable": false,
@@ -47,7 +47,7 @@
     "twitter": "https://x.com/galaxybuilt"
   },
   "branding": {
-    "blog_name": "Txchyon Bear",
+    "blog_name": "Defensive Intelligence Division",
     "tagline": "Defensive Intelligence. Systemic Risk Analysis.",
     "twitter_handle": "@txchyon"
   }

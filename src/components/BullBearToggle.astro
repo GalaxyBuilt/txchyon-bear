@@ -3,7 +3,7 @@
 ---
 
 <div class="bull-bear-toggle-container">
-  <button id="ecosystem-toggle" class="ecosystem-toggle" aria-label="Toggle Ecosystem">
+  <button type="button" class="ecosystem-toggle" aria-label="Toggle Ecosystem">
     <div class="toggle-track">
       <div class="toggle-thumb">
         <span class="bull-icon">🐂</span>
@@ -13,6 +13,16 @@
     <span class="toggle-label text-[10px] font-black uppercase tracking-widest ml-2 italic"></span>
   </button>
 </div>
+
+<style is:global>
+[data-theme="bear"] .toggle-thumb {
+  transform: translateX(24px);
+  background: var(--color-bear-hover, #b22222) !important;
+}
+[data-theme="bear"] .bull-icon { display: none; }
+[data-theme="bear"] .bear-icon { display: block; }
+[data-theme="bear"] .ecosystem-toggle { border-color: var(--color-bear-hover, #b22222) !important; }
+</style>
 
 <style>
 .ecosystem-toggle {
@@ -64,24 +74,6 @@
 .bear-icon {
   display: none;
 }
-
-/* Bear State */
-[data-theme="bear"] .toggle-thumb {
-  transform: translateX(24px);
-  background: var(--color-bear-hover, #b22222);
-}
-
-[data-theme="bear"] .bull-icon {
-  display: none;
-}
-
-[data-theme="bear"] .bear-icon {
-  display: block;
-}
-
-[data-theme="bear"] .ecosystem-toggle {
-  border-color: var(--color-bear-hover, #b22222);
-}
 </style>
 
 <script>
@@ -89,10 +81,11 @@
   
   function updateToggleUI() {
     const ecosystem = localStorage.getItem(ECOSYSTEM_KEY) || 'bull';
-    const label = document.querySelector('.toggle-label');
-    if (label) {
-      label.textContent = ecosystem === 'bear' ? 'Bear Mode' : 'Bull Mode';
-    }
+    
+    // Update all labels safely
+    document.querySelectorAll('.toggle-label').forEach(label => {
+      label.textContent = ecosystem === 'bear' ? 'Bull Mode' : 'Bear Mode';
+    });
     
     if (ecosystem === 'bear') {
       document.documentElement.setAttribute('data-theme', 'bear');
@@ -102,33 +95,49 @@
     }
   }
 
-  function toggleEcosystem() {
-    const current = localStorage.getItem(ECOSYSTEM_KEY) || 'bull';
-    const next = current === 'bull' ? 'bear' : 'bull';
+  function handleRedirection(next) {
+    const host = window.location.hostname;
+    const isLocal = host === 'localhost' || host === '127.0.0.1';
     
-    localStorage.setItem(ECOSYSTEM_KEY, next);
-    updateToggleUI();
-    
-    // Redirection Logic
     if (next === 'bear') {
-      if (!window.location.pathname.startsWith('/bear')) {
+      if (isLocal) {
+        // Force port 4325 for Bear in dev
+        if (window.location.port !== '4325') {
+          window.location.href = 'http://' + host + ':4325/bear';
+        }
+      } else if (!window.location.pathname.startsWith('/bear')) {
         window.location.href = '/bear';
       }
     } else {
-      if (window.location.pathname.startsWith('/bear')) {
+      if (isLocal) {
+        // Force port 4321 for Bull in dev
+        if (window.location.port !== '4321') {
+          window.location.href = 'http://' + host + ':4321/';
+        }
+      } else if (window.location.pathname.startsWith('/bear')) {
         window.location.href = '/';
       }
     }
   }
 
-  const btn = document.getElementById('ecosystem-toggle');
-  if (btn) {
-    btn.addEventListener('click', toggleEcosystem);
+  // Prevent multiple attachment by using a global check
+  if (!window.ecosystemInitialized) {
+    window.ecosystemInitialized = true;
+    
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.ecosystem-toggle');
+      if (btn) {
+        const current = localStorage.getItem(ECOSYSTEM_KEY) || 'bull';
+        const next = current === 'bull' ? 'bear' : 'bull';
+        
+        localStorage.setItem(ECOSYSTEM_KEY, next);
+        updateToggleUI();
+        handleRedirection(next);
+      }
+    });
   }
 
-  // Initial UI sync
+  // Ensure UI is synced on every load/transition
   updateToggleUI();
-  
-  // Re-init after transitions
   document.addEventListener('astro:page-load', updateToggleUI);
 </script>

@@ -1,4 +1,4 @@
-﻿// src/lib/categories.js - TXCHYON BEAR PILLAR HIERARCHY
+﻿// src/lib/categories.js - DEFENSIVE INTELLIGENCE PILLAR HIERARCHY
 export const CATEGORY_HIERARCHY = {
   "bearish-frameworks": {
     name: "Bearish Frameworks",
