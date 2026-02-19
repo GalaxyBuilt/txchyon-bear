@@ -18,7 +18,7 @@ const isBear = Astro.url.pathname.startsWith('/bear');
       <a href={isBear ? "/bear" : "/"} class="flex items-center space-x-3 group">
         <div class="relative">
           <img
-            src={isBear ? "https://txchyon.com/images/logo2.png" : "https://txchyon.com/images/logo.png"}
+            src={isBear ? "/images/logo2.png" : "/images/logo.png"}
             alt="Txchyon"
             class="h-10 w-auto object-contain transition-transform group-hover:scale-110"
           />

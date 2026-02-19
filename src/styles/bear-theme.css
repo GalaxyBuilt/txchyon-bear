@@ -1,48 +1,105 @@
 /* src/styles/bear-theme.css */
 :root {
-  --color-bear-bg: #0f1113;
-  --color-bear-accent: linear-gradient(135deg, #8b0000 0%, #ff4500 50%, #b22222 100%);
-  --color-bear-hover: #b22222;
-  --color-bear-text: #e0e0e0;
-  --color-bear-text-light: #a1a5ae;
-  --color-bear-border: #1f2226;
+  --color-bear-accent: #ff3333;
+  --color-bear-accent-muted: rgba(255, 51, 51, 0.1);
+  --color-bear-hover: #cc0000;
+  --grid-color-light: rgba(255, 51, 51, 0.05);
+  --grid-color-dark: rgba(255, 51, 51, 0.03);
+}
+
+/* Base Bear Theme (Light) */
+[data-theme="bear"] {
+  --color-bear-bg: #ffffff;
+  --color-bear-text: #050607;
+  --color-bear-text-muted: #666666;
+  --color-bear-border: rgba(0, 0, 0, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(255, 51, 51, 0.1);
+  --grid-color: var(--grid-color-light);
+}
+
+/* Dark Mode Overrides for Bear Theme */
+html.dark [data-theme="bear"],
+[data-theme="bear"].dark {
+  --color-bear-bg: #050607;
+  --color-bear-text: #f0f0f0;
+  --color-bear-text-muted: #888888;
+  --color-bear-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(10, 10, 10, 0.7);
+  --glass-border: rgba(255, 51, 51, 0.15);
+  --grid-color: var(--grid-color-dark);
 }
 
 [data-theme="bear"] {
   background-color: var(--color-bear-bg) !important;
   color: var(--color-bear-text) !important;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Systemic Grid Background */
+[data-theme="bear"]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: -1;
 }
 
 [data-theme="bear"] .bg-body {
-  background-color: var(--color-bear-bg) !important;
+  background-color: transparent !important;
 }
 
-[data-theme="bear"] .text-text {
-  color: var(--color-bear-text) !important;
+/* Glassmorphism Components */
+[data-theme="bear"] header {
+  background-color: var(--glass-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+}
+
+[data-theme="bear"] .navbar-brand span {
+  color: var(--color-bear-accent) !important;
 }
 
 [data-theme="bear"] .bg-primary {
-  background: var(--color-bear-accent) !important;
+  background-color: var(--color-bear-accent) !important;
+  background-image: linear-gradient(135deg, #8b0000 0%, #ff3333 100%) !important;
+}
+
+[data-theme="bear"] .text-primary {
+  color: var(--color-bear-accent) !important;
 }
 
 [data-theme="bear"] .hover\:bg-primary:hover {
   background-color: var(--color-bear-hover) !important;
 }
 
-/* Specific overrides for Bear mode */
-[data-theme="bear"] a:hover {
-  color: var(--color-bear-hover) !important;
-}
-
-[data-theme="bear"] .border-gray-200 {
+[data-theme="bear"] .border-gray-200,
+[data-theme="bear"] .border-border {
   border-color: var(--color-bear-border) !important;
 }
 
-[data-theme="bear"] header {
-  background-color: rgba(15, 17, 19, 0.8) !important;
-  border-color: var(--color-bear-border) !important;
+/* Alert/Defensive Styling */
+[data-theme="bear"] .bg-red-500\/10 {
+  background-color: var(--color-bear-accent-muted) !important;
+  border-color: var(--glass-border) !important;
 }
 
-[data-theme="bear"] .dark\:bg-black\/80 {
-  background-color: rgba(15, 17, 19, 0.8) !important;
+[data-theme="bear"] .text-red-500,
+[data-theme="bear"] .text-red-600 {
+  color: var(--color-bear-accent) !important;
+}
+
+/* Dark mode specific utility overrides */
+html.dark [data-theme="bear"] .bg-white\/80 {
+  background-color: var(--glass-bg) !important;
+}
+
+html.dark [data-theme="bear"] .border-white\/10 {
+  border-color: var(--color-bear-border) !important;
 }

@@ -444,7 +444,12 @@ const finalCanonical = canonical ?? `${config.site.base_url}${cleanPath}`;
         // Apply Ecosystem
         if (ecosystem === 'bear') {
           document.documentElement.setAttribute('data-theme', 'bear');
-          document.documentElement.classList.add('dark'); // Bear is dark by default
+          // Allow bear to have both light and dark modes
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
         } else {
           document.documentElement.setAttribute('data-theme', theme);
           if (theme === 'dark') {
@@ -455,7 +460,8 @@ const finalCanonical = canonical ?? `${config.site.base_url}${cleanPath}`;
         }
         
         // Sync meta theme color
-        const themeColor = (ecosystem === 'bear' || theme === 'dark') ? '#0f1113' : '#ffffff';
+        const isActuallyDark = document.documentElement.classList.contains('dark');
+        const themeColor = isActuallyDark ? '#050607' : '#ffffff';
         document.querySelector('meta[name="theme-color"]')?.setAttribute('content', themeColor);
         
         if (!savedTheme) {

@@ -21,28 +21,28 @@
       "name": "Knowledge",
       "dropdown": [
         {
-          "name": "Getting Started",
-          "url": "/categories/getting-started"
+          "name": "Bearish Frameworks",
+          "url": "/categories/bearish-frameworks"
         },
         {
-          "name": "Airdrop Farming",
-          "url": "/categories/airdrop-farming"
+          "name": "Capital Preservation",
+          "url": "/categories/capital-preservation"
         },
         {
-          "name": "DeFi & Yield",
-          "url": "/categories/defi-yield"
+          "name": "Crowd Psychology",
+          "url": "/categories/crowd-psychology"
         },
         {
-          "name": "Security & Privacy",
-          "url": "/categories/security-privacy"
+          "name": "Fraud Red Flags",
+          "url": "/categories/fraud-red-flags"
         },
         {
-          "name": "Alpha & Insider",
-          "url": "/categories/alpha-insider"
+          "name": "Macro Liquidity",
+          "url": "/categories/macro-liquidity"
         },
         {
-          "name": "Web3 Gaming",
-          "url": "/categories/web3-gaming-metaverse"
+          "name": "Systemic Risk",
+          "url": "/categories/systemic-risk"
         },
         {
           "name": "View Pillars",
@@ -61,6 +61,11 @@
     {
       "name": "Shop",
       "url": "/shop"
+    },
+    {
+      "name": "Bull Side",
+      "url": "https://txchyon.com",
+      "external": true
     }
   ],
   "footer": [
