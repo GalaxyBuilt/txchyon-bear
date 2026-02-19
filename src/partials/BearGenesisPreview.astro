@@ -4,22 +4,22 @@
 
 <!-- 🛡️ BEAR GENESIS TERMINAL - DEFENSIVE INTELLIGENCE DIVISION -->
 <section class="relative py-32 overflow-hidden bear-bg-main border-b bear-border-accent">
-    <!-- Darker, more menacing background -->
-    <div class="absolute inset-0 bg-gradient-to-br from-[#030405] via-[#050708] to-[#0a0c0e]"></div>
+    <!-- Dynamic background gradient -->
+    <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-bear-bg)] via-[var(--color-bear-bg-alt)] to-[var(--color-bear-bg-card)]"></div>
     
     <!-- Threat grid overlay -->
-    <div class="absolute inset-0 opacity-5" style="background-image: 
-        linear-gradient(#b91c1c 1px, transparent 1px),
-        linear-gradient(90deg, #b91c1c 1px, transparent 1px);
+    <div class="absolute inset-0 opacity-[0.05] dark:opacity-[0.05]" style="background-image: 
+        linear-gradient(var(--color-bear-accent) 1px, transparent 1px),
+        linear-gradient(90deg, var(--color-bear-accent) 1px, transparent 1px);
         background-size: 50px 50px;">
     </div>
     
     <!-- Blood glow orbs -->
-    <div class="absolute top-20 left-20 w-96 h-96 bg-red-900/20 rounded-full blur-[100px]"></div>
-    <div class="absolute bottom-20 right-20 w-96 h-96 bg-orange-900/20 rounded-full blur-[100px]"></div>
+    <div class="absolute top-20 left-20 w-96 h-96 bg-red-500/5 dark:bg-red-950/20 rounded-full blur-[100px]"></div>
+    <div class="absolute bottom-20 right-20 w-96 h-96 bg-orange-500/5 dark:bg-orange-950/20 rounded-full blur-[100px]"></div>
     
     <!-- Warning scanlines -->
-    <div class="absolute inset-0 opacity-[0.02] pointer-events-none" style="background: repeating-linear-gradient(0deg, rgba(185, 28, 28, 0.1) 0px, rgba(185, 28, 28, 0.1) 2px, transparent 2px, transparent 4px);"></div>
+    <div class="absolute inset-0 opacity-[0.01] dark:opacity-[0.02] pointer-events-none" style="background: repeating-linear-gradient(0deg, var(--color-bear-accent) 0px, var(--color-bear-accent) 2px, transparent 2px, transparent 4px);"></div>
     
     <div class="container mx-auto px-4 relative z-10">
         <div class="max-w-5xl mx-auto">
@@ -34,7 +34,7 @@
                         <span class="text-[8px] font-black bear-text-dim uppercase">Threat_Level</span>
                         <span class="text-xs font-black text-red-500">ELEVATED</span>
                     </div>
-                    <div class="w-px h-4 bg-red-900/30"></div>
+                    <div class="w-px h-4 bg-red-500/10 dark:bg-red-950/20"></div>
                     <div class="flex items-center gap-2">
                         <span class="text-[8px] font-black bear-text-dim uppercase">Nodes_Online</span>
                         <span class="text-xs font-black text-orange-500">850</span>
@@ -47,7 +47,7 @@
                 <!-- Glow effect on hover -->
                 <div class="absolute -inset-1 bg-gradient-to-r from-red-600/20 via-orange-600/20 to-amber-700/20 rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                 
-                <div class="relative bear-bg-card border-2 border-red-900/30 rounded-[3rem] p-1 shadow-2xl">
+                <div class="relative bear-bg-card border-2 bear-border-accent rounded-[3rem] p-1 shadow-2xl">
                     <div class="rounded-[2.8rem] overflow-hidden">
                         <!-- Terminal Header -->
                         <div class="bear-bg-main px-8 py-4 flex items-center justify-between border-b bear-border-accent">
@@ -67,7 +67,7 @@
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                                 <div>
                                     <!-- Warning Badge -->
-                                    <div class="inline-flex items-center gap-2 mb-8 px-4 py-2 bg-red-950/30 border border-red-600/30 rounded-full">
+                                    <div class="inline-flex items-center gap-2 mb-8 px-4 py-2 bg-red-500/10 dark:bg-red-950/20 border bear-border-accent rounded-full">
                                         <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span>
                                         <span class="text-[10px] font-black text-red-400 uppercase tracking-[0.3em]">⚠️ SYSTEM WARNING ⚠️</span>
                                     </div>
@@ -87,12 +87,12 @@
                                             <div class="text-2xl font-black bear-text-main mb-1">230+</div>
                                             <div class="text-[8px] font-black bear-text-dim uppercase tracking-widest">Active_Threats</div>
                                         </div>
-                                        <div class="w-px h-10 bg-red-900/30"></div>
+                                        <div class="w-px h-10 bg-red-500/10 dark:bg-red-950/20"></div>
                                         <div>
                                             <div class="text-2xl font-black bear-text-main mb-1">6</div>
                                             <div class="text-[8px] font-black bear-text-dim uppercase tracking-widest">Defensive_Pillars</div>
                                         </div>
-                                        <div class="w-px h-10 bg-red-900/30"></div>
+                                        <div class="w-px h-10 bg-red-500/10 dark:bg-red-950/20"></div>
                                         <div>
                                             <div class="text-2xl font-black bear-text-main mb-1">24/7</div>
                                             <div class="text-[8px] font-black bear-text-dim uppercase tracking-widest">Risk_Monitoring</div>
@@ -104,14 +104,14 @@
                                             <span class="relative z-10 group-hover:bear-text-main">Assess_Risk →</span>
                                             <div class="absolute inset-0 bg-gradient-to-r from-red-600 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                         </a>
-                                        <a href="/bear/blog" class="px-10 py-5 border-2 border-red-600/50 bear-text-main font-black uppercase text-sm tracking-[0.2em] italic rounded-2xl hover:bg-red-600/20 transition-all hover:-translate-y-1">
+                                        <a href="/bear/blog" class="px-10 py-5 border-2 bear-border-accent bear-text-main font-black uppercase text-sm tracking-[0.2em] italic rounded-2xl hover:bg-red-500/10 dark:bg-red-950/20 transition-all hover:-translate-y-1">
                                             Threat_Feed
                                         </a>
                                     </div>
                                 </div>
                                 
                                 <!-- Right side - Threat Console -->
-                                <div class="bear-bg-main border border-red-900/30 rounded-2xl p-6 font-mono">
+                                <div class="bear-bg-main border bear-border-accent rounded-2xl p-6 font-mono">
                                     <div class="flex items-center gap-2 mb-4 pb-4 border-b bear-border-accent">
                                         <div class="w-2 h-2 rounded-full bg-red-600"></div>
                                         <span class="text-[10px] bear-text-muted">threat_console@bear:~/active$</span>
