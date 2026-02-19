@@ -1,0 +1,24 @@
+<!-- src/layouts/components/Posts.astro -->
+---
+import PostCard from "@/components/PostCard.astro";
+import type { CollectionEntry } from "astro:content";
+
+type Props = {
+  posts: CollectionEntry<"posts">[];
+  className?: string;
+  fluid?: boolean;
+};
+
+const { className, posts, fluid } = Astro.props;
+---
+
+<div class={`relative grid gap-8 ${className}`}>
+  {/* Industrial background accent for the grid area */}
+  <div class="absolute inset-0 dark:bg-[radial-gradient(#ffffff05_1px,transparent_1px)] bg-[radial-gradient(#00000005_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none -mx-4"></div>
+
+  {posts && posts.map((post, i: number) => (
+    <div class={`${(i === 0 && fluid !== false) ? "md:col-span-2 lg:col-span-3" : "col-span-1"}`}>
+      <PostCard post={post} isFeatured={i === 0 && fluid !== false} />
+    </div>
+  ))}
+</div>

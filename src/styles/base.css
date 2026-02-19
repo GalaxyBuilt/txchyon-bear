@@ -1,0 +1,101 @@
+/* base.css - OPTIMIZED FOR DESKTOP & MOBILE */
+html {
+  @apply text-base;
+}
+
+body {
+  @apply bg-body font-primary font-normal leading-relaxed text-text;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-primary font-bold leading-tight text-dark;
+}
+
+h1,
+.h1 {
+  @apply text-h1-sm md:text-h1;
+}
+
+h2,
+.h2 {
+  @apply text-h2-sm md:text-h1;
+}
+
+h3,
+.h3 {
+  @apply text-h3-sm md:text-h3;
+}
+
+h4,
+.h4 {
+  @apply text-h4;
+}
+
+h5,
+.h5 {
+  @apply text-h5;
+}
+
+h6,
+.h6 {
+  @apply text-h6;
+}
+
+b,
+strong {
+  @apply font-semibold;
+}
+
+/* ========== IMAGE FIX ========== */
+
+/* 1. All images responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 2. HERO IMAGE: Full width */
+img[src="/images/posts/metamask.jpg"] {
+  max-width: 100% !important;
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+}
+
+/* 3. BLOG POST IMAGES: Responsive 680px max */
+/* Better for both desktop and mobile */
+article img,
+.post-content img,
+.blog-content img,
+.content img {
+  max-width: min(680px, 100%) !important;
+  /* On mobile: 100% of screen width */
+  /* On desktop: max 680px */
+  width: auto !important;
+  height: auto !important;
+  display: block !important;
+  margin: 1.5rem auto !important;
+  border-radius: 8px !important;
+}
+
+/* 4. SCREENSHOTS in blog posts */
+article img[src*="screenshots/"] {
+  border: 1px solid #e5e7eb !important;
+}
+
+.dark article img[src*="screenshots/"] {
+  border-color: #374151 !important;
+}
+
+/* 5. PROTECT: Site logo/header images */
+.site-logo img,
+.brand-logo img,
+.logo img {
+  max-width: none;
+  width: auto;
+}

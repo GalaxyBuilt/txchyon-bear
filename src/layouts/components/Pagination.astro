@@ -1,0 +1,180 @@
+---
+const { section, currentPage, totalPages } = Astro.props;
+
+const indexPageLink = currentPage === 2;
+const hasPrevPage = currentPage > 1;
+const hasNextPage = totalPages > currentPage;
+
+// Smart pagination function
+function getSmartPageList(currentPage, totalPages, maxVisible = 5) {
+  if (totalPages <= maxVisible + 2) {
+    // If total pages are small, show all
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+
+  let pages = [];
+  
+  // Always include first page
+  pages.push(1);
+  
+  // Calculate start and end of middle pages
+  let start = Math.max(2, currentPage - Math.floor((maxVisible - 2) / 2));
+  let end = Math.min(totalPages - 1, start + (maxVisible - 3));
+  
+  // Adjust if we're near the end
+  if (end >= totalPages - 1) {
+    start = Math.max(2, totalPages - (maxVisible - 2));
+  }
+  
+  // Add left ellipsis if needed
+  if (start > 2) {
+    pages.push('left-ellipsis');
+  }
+  
+  // Add middle pages
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+  
+  // Add right ellipsis if needed
+  if (end < totalPages - 1) {
+    pages.push('right-ellipsis');
+  }
+  
+  // Always include last page
+  pages.push(totalPages);
+  
+  return pages;
+}
+
+const smartPages = getSmartPageList(currentPage, totalPages, 5);
+---
+{
+  totalPages > 1 && (
+    <nav class="mb-4 flex justify-center space-x-2 text-center" aria-label="Pagination">
+      {/* Previous button */}
+      {hasPrevPage ? (
+        <a
+          href={
+            indexPageLink
+              ? `${section ? "/" + section : "/"}`
+              : `${section ? "/" + section : ""}/page/${currentPage - 1}`
+          }
+          class="border border-primary hover:bg-primary hover:text-white rounded-md h-10 w-10 leading-[36px] font-semibold text-dark flex items-center justify-center transition duration-200"
+          aria-label="Go to previous page"
+        >
+          <span class="sr-only">Previous</span>
+          <svg
+            class="h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+      ) : (
+        <span class="border border-gray-400 opacity-40 rounded-md h-10 w-10 leading-[36px] font-semibold text-dark flex items-center justify-center pointer-events-none">
+          <span class="sr-only">Previous</span>
+          <svg
+            class="h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </span>
+      )}
+
+      {/* Page numbers with smart pagination */}
+      {smartPages.map((page) => {
+        if (page === 'left-ellipsis' || page === 'right-ellipsis') {
+          return (
+            <span
+              class="border border-transparent rounded-md h-10 w-10 leading-[35px] font-semibold text-dark flex items-center justify-center"
+              aria-hidden="true"
+            >
+              ...
+            </span>
+          );
+        }
+        
+        const isCurrent = page === currentPage;
+        const isFirstPage = page === 1;
+        
+        return isCurrent ? (
+          <span
+            aria-current="page"
+            class="border border-primary bg-primary rounded-md h-10 w-10 leading-[35px] font-semibold text-white flex items-center justify-center"
+          >
+            {page}
+          </span>
+        ) : (
+          <a
+            href={
+              isFirstPage
+                ? `${section ? "/" + section : "/"}`
+                : `${section ? "/" + section : ""}/page/${page}`
+            }
+            class="border border-primary hover:bg-primary hover:text-white rounded-md h-10 w-10 leading-[36px] font-semibold text-dark flex items-center justify-center transition duration-200"
+            aria-label={`Go to page ${page}`}
+          >
+            {page}
+          </a>
+        );
+      })}
+
+      {/* Next button */}
+      {hasNextPage ? (
+        <a
+          href={`${section ? "/" + section : ""}/page/${currentPage + 1}`}
+          class="border border-primary hover:bg-primary hover:text-white rounded-md h-10 w-10 leading-[36px] font-semibold text-dark flex items-center justify-center transition duration-200"
+          aria-label="Go to next page"
+        >
+          <span class="sr-only">Next</span>
+          <svg
+            class="h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+      ) : (
+        <span class="border border-gray-400 opacity-40 rounded-md h-10 w-10 leading-[36px] font-semibold text-dark flex items-center justify-center pointer-events-none">
+          <span class="sr-only">Next</span>
+          <svg
+            class="h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </span>
+      )}
+    </nav>
+  )
+}

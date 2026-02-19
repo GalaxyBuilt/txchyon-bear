@@ -1,0 +1,83 @@
+﻿---
+import config from "@/config/config.json";
+
+const {
+  title,
+  description,
+  image,
+  canonical,
+  noindex = false,
+  type = "website",
+  publishedTime,
+  author = config.metadata.meta_author,
+  section = "Crypto",
+} = Astro.props;
+
+const BASE = config.site.base_url;
+
+const finalTitle = title
+  ? `${title} // ${config.site.title}`
+  : `${config.site.title} — Institutional Research, Execution Terminals & Alpha Intelligence`;
+
+const finalDescription = description && description !== "true"
+  ? description
+  : config.metadata.meta_description;
+
+// Always use absolute URL so crawlers (Twitter, Facebook, LinkedIn) can fetch it
+const finalImage = image
+  ? (image.startsWith('http') ? image : `${BASE}${image.startsWith('/') ? '' : '/'}${image}`)
+  : config.metadata.meta_image;
+
+const cleanPath = Astro.url.pathname.replace(/\/$/, "");
+const finalCanonical = canonical ?? `${BASE}${cleanPath}`;
+---
+
+<!-- Primary Meta Tags -->
+<title>{finalTitle}</title>
+<meta name="title" content={finalTitle} />
+<meta name="description" content={finalDescription} />
+<meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
+<meta name="author" content={author} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={finalCanonical} />
+<meta property="og:title" content={finalTitle} />
+<meta property="og:description" content={finalDescription} />
+<meta property="og:image" content={finalImage} />
+<meta property="og:image:secure_url" content={finalImage} />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={finalTitle} />
+<meta property="og:logo" content={`${BASE}/images/logo.png`} />
+<meta property="og:site_name" content={config.site.title} />
+<meta property="og:locale" content="en_US" />
+
+<!-- Article-specific Open Graph -->
+{type === 'article' && (
+  <>
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    <meta property="article:author" content={author} />
+    <meta property="article:section" content={section} />
+    <meta property="article:tag" content="DeFi" />
+    <meta property="article:tag" content="Crypto" />
+    <meta property="article:tag" content="Bitcoin" />
+    <meta property="article:tag" content="Alpha" />
+    <meta property="article:tag" content="Blockchain" />
+    <meta property="article:tag" content="Web3" />
+  </>
+)}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={finalCanonical} />
+<meta name="twitter:title" content={finalTitle} />
+<meta name="twitter:description" content={finalDescription} />
+<meta name="twitter:image" content={finalImage} />
+<meta name="twitter:image:alt" content={finalTitle} />
+<meta name="twitter:site" content={config.branding.twitter_handle} />
+<meta name="twitter:creator" content={config.branding.twitter_handle} />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={finalCanonical} />

@@ -1,0 +1,21 @@
+---
+// src/lib/contentParser.astro - MODERN & CLEAN
+
+import {
+  getCollection,
+  type CollectionEntry,
+  type CollectionKey,
+} from "astro:content";
+
+/**
+ * Helper function to get all published (non-draft) entries from a content collection.
+ * Works with nested folders and returns clean collection entries.
+ */
+export const getSinglePage = async <C extends CollectionKey>(
+  collectionName: C
+): Promise<CollectionEntry<C>[]> => {
+  return await getCollection(collectionName, ({ data }) => {
+    return data.draft !== true;
+  });
+};
+---

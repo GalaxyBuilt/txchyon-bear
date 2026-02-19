@@ -1,0 +1,48 @@
+/* src/styles/bear-theme.css */
+:root {
+  --color-bear-bg: #0f1113;
+  --color-bear-accent: linear-gradient(135deg, #8b0000 0%, #ff4500 50%, #b22222 100%);
+  --color-bear-hover: #b22222;
+  --color-bear-text: #e0e0e0;
+  --color-bear-text-light: #a1a5ae;
+  --color-bear-border: #1f2226;
+}
+
+[data-theme="bear"] {
+  background-color: var(--color-bear-bg) !important;
+  color: var(--color-bear-text) !important;
+}
+
+[data-theme="bear"] .bg-body {
+  background-color: var(--color-bear-bg) !important;
+}
+
+[data-theme="bear"] .text-text {
+  color: var(--color-bear-text) !important;
+}
+
+[data-theme="bear"] .bg-primary {
+  background: var(--color-bear-accent) !important;
+}
+
+[data-theme="bear"] .hover\:bg-primary:hover {
+  background-color: var(--color-bear-hover) !important;
+}
+
+/* Specific overrides for Bear mode */
+[data-theme="bear"] a:hover {
+  color: var(--color-bear-hover) !important;
+}
+
+[data-theme="bear"] .border-gray-200 {
+  border-color: var(--color-bear-border) !important;
+}
+
+[data-theme="bear"] header {
+  background-color: rgba(15, 17, 19, 0.8) !important;
+  border-color: var(--color-bear-border) !important;
+}
+
+[data-theme="bear"] .dark\:bg-black\/80 {
+  background-color: rgba(15, 17, 19, 0.8) !important;
+}

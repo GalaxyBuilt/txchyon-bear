@@ -1,0 +1,54 @@
+﻿{
+  "site": {
+    "title": "Txchyon OS",
+    "base_url": "https://txchyon.com",
+    "base_path": "/",
+    "trailing_slash": false,
+    "favicon": "/images/favicon.ico",
+    "logo": false,
+    "logo_width": "200",
+    "logo_height": "34",
+    "logo_text": "Txchyon OS"
+  },
+  "settings": {
+    "pagination": 6
+  },
+  "metadata": {
+    "meta_author": "GalaxyBuilt",
+    "meta_image": "https://txchyon.com/images/og-txchyon.png",
+    "meta_description": "Txchyon OS: Open-Source DeFi Infrastructure. Institutional research terminals, systematic alpha, marketing services & the Genesis BTC platform."
+  },
+  "google_tag_manager": {
+    "enable": false,
+    "gtm_id": ""
+  },
+  "params": {
+    "contact_form_action": "https://formspree.io/f/xzznjdnr",
+    "copyright": "© 2026 Txchyon Capital"
+  },
+  "contactinfo": {
+    "address": "Scottsdale, AZ",
+    "email": "contact@txchyon.com",
+    "phone": "+63 9613092580"
+  },
+  "social": {
+    "twitter": "https://twitter.com/txchyon",
+    "telegram": "https://t.me/txchyon",
+    "discord": "https://discord.gg/txchyon",
+    "github": "https://github.com/txchyon",
+    "linkedin": "",
+    "youtube": "",
+    "instagram": ""
+  },
+  "author": {
+    "name": "Galaxy",
+    "bio": "Founder of Txchyon Capital, a private on-chain research and media firm.",
+    "avatar": "/images/avatar.jpg",
+    "twitter": "https://x.com/galaxybuilt"
+  },
+  "branding": {
+    "blog_name": "Txchyon OS",
+    "tagline": "Open-Source Institutional Infrastructure. Open-Source Intelligence.",
+    "twitter_handle": "@txchyon"
+  }
+}

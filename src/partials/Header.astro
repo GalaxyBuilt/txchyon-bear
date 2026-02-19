@@ -1,0 +1,277 @@
+﻿---
+// src/partials/Header.astro - RE-ENGINEERED ECOSYSTEM HEADER
+import menu from "@/config/menu.json";
+import config from "@/config/config.json";
+import { IoSearch } from "react-icons/io5";
+import MobileNavigation from "@/partials/MobileNavigation.astro";
+import BullBearToggle from "@/components/BullBearToggle.astro";
+
+const main = menu.main;
+const isBear = Astro.url.pathname.startsWith('/bear');
+---
+
+<header class="sticky top-0 z-50 py-4 md:py-6 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-200 dark:border-white/10 transition-all duration-300">
+  <div class="mx-auto px-4 md:px-6 lg:px-8 xl:px-12 max-w-7xl flex items-center justify-between gap-4 md:gap-6">
+    
+    <!-- 🧬 LOGO + ECOSYSTEM STATUS -->
+    <div class="flex items-center gap-6">
+      <a href={isBear ? "/bear" : "/"} class="flex items-center space-x-3 group">
+        <div class="relative">
+          <img
+            src={isBear ? "https://txchyon.com/images/logo2.png" : "https://txchyon.com/images/logo.png"}
+            alt="Txchyon"
+            class="h-10 w-auto object-contain transition-transform group-hover:scale-110"
+          />
+          <div class={`absolute -top-1 -right-1 w-3 h-3 ${isBear ? 'bg-red-500' : 'bg-green-500'} border-2 border-white dark:border-black rounded-full animate-pulse`}></div>
+        </div>
+        <div class="flex flex-col items-start leading-none">
+          <span class="text-xl md:text-2xl font-black text-black dark:text-white uppercase italic tracking-tighter">
+            Txchyon {isBear ? <span class="text-red-600">Bear</span> : ""}
+          </span>
+          <span class="text-[9px] font-bold text-gray-500 dark:text-gray-400 tracking-widest uppercase mt-0.5">
+            {isBear ? "Defensive Intel" : "DeFi OS"}
+          </span>
+        </div>
+      </a>
+      
+      <!-- Operational Indicator (Desktop) -->
+      <div class={`hidden lg:flex items-center gap-2 px-3 py-1 rounded-full ${isBear ? 'bg-red-500/10 border-red-500/20' : 'bg-green-500/10 border-green-500/20'} border`}>
+         <div class={`w-1.5 h-1.5 rounded-full ${isBear ? 'bg-red-500' : 'bg-green-500'} animate-pulse`}></div>
+         <span class={`text-[9px] font-black ${isBear ? 'text-red-500' : 'text-green-500'} uppercase tracking-widest italic`}>{isBear ? "Alert" : "Stable"}</span>
+      </div>
+    </div>
+
+    <!-- 🌐 ECOSYSTEM NAVIGATION -->
+    <nav class="hidden md:flex items-center justify-center flex-1">
+      <div class="flex items-center space-x-1 lg:space-x-2">
+        {main.map(item => (
+          <div class="relative group px-1 py-2">
+            {item.dropdown ? (
+              <button class="flex items-center gap-1.5 px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-all rounded-lg hover:bg-black/5 dark:hover:bg-white/5 group-hover:bg-black/5 dark:group-hover:bg-white/5">
+                {item.name} 
+                <svg class="w-2.5 h-2.5 opacity-50 group-hover:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            ) : (
+              <a
+                href={item.url}
+                class="px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-all rounded-lg hover:bg-black/5 dark:hover:bg-white/5"
+              >
+                {item.name}
+              </a>
+            )}
+
+            {/* Premium Dropdown with Sub-Descriptions */}
+            {item.dropdown && (
+              <div class="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50">
+                <div class="w-80 bg-white dark:bg-zinc-950 border border-gray-200 dark:border-white/10 rounded-2xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)] overflow-hidden backdrop-blur-3xl">
+                  <div class="p-4 grid grid-cols-1 gap-2">
+                    <div class="px-4 py-2 mb-1 border-b border-gray-100 dark:border-white/5">
+                       <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">{item.name} Central</span>
+                    </div>
+                    {item.dropdown.map(sub => (
+                      <a
+                        href={sub.url}
+                        class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-all group/item"
+                      >
+                        <div class="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/5 flex items-center justify-center text-lg transition-transform group-hover/item:scale-110">
+                          {sub.name.includes("SOL") ? "⚡" : sub.name.includes("Intel") ? "🧠" : sub.name.includes("BTC") ? "₿" : sub.name.includes("Getting") ? "🚀" : sub.name.includes("Airdrop") ? "🪂" : sub.name.includes("DeFi") ? "🏦" : sub.name.includes("Security") ? "🛡️" : sub.name.includes("Alpha") ? "🔥" : sub.name.includes("Gaming") ? "🎮" : "📚"}
+                        </div>
+                        <div class="flex flex-col">
+                          <span class="text-xs font-black text-gray-800 dark:text-gray-200 group-hover/item:text-cyan-500 transition-colors">{sub.name}</span>
+                          <span class="text-[10px] text-gray-500 dark:text-gray-500 font-medium">Access terminal protocols</span>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                  <div class="bg-black/5 dark:bg-white/5 px-5 py-3 flex justify-between items-center">
+                     <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest italic">Txchyon_OS v3.1</span>
+                     <div class="flex gap-2">
+                        <div class="w-1 h-1 rounded-full bg-cyan-500/50"></div>
+                        <div class="w-1 h-1 rounded-full bg-cyan-500/50"></div>
+                        <div class="w-1 h-1 rounded-full bg-cyan-500/50"></div>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </nav>
+
+
+    <!-- 🛠️ UTILITIES -->
+    <div class="flex items-center gap-2 md:gap-4">
+      
+      <!-- Search -->
+      <a href="/search" class="p-2.5 text-gray-500 hover:text-black dark:hover:text-white transition-colors hover:bg-black/5 dark:hover:bg-white/5 rounded-xl block md:hidden lg:block">
+        <IoSearch class="w-5 h-5 md:w-5 md:h-5" />
+      </a>
+
+      <!-- RSS Feed -->
+      <a href="/rss.xml" title="RSS Feed" class="p-2.5 text-gray-400 hover:text-orange-500 transition-colors hover:bg-black/5 dark:hover:bg-white/5 rounded-xl hidden lg:block">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+        </svg>
+      </a>
+
+      <!-- JSON Feed -->
+      <a href="/feed.json" title="JSON Feed" class="p-2.5 text-gray-400 hover:text-cyan-500 transition-colors hover:bg-black/5 dark:hover:bg-white/5 rounded-xl hidden lg:block font-black text-[10px] tracking-tighter font-mono">
+        {`{}`}
+      </a>
+
+      <!-- Ecosystem Toggle -->
+      <BullBearToggle />
+
+      <!-- Theme Toggle -->
+      <button
+        id="theme-toggle"
+        class="p-2.5 rounded-xl text-gray-500 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+        title="Toggle theme"
+      >
+        <svg id="theme-icon-sun" class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+        </svg>
+        <svg id="theme-icon-moon" class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      </button>
+
+
+      <!-- CTA (Terminal Access) -->
+      <a href="/shop" class="hidden sm:flex px-6 py-2.5 bg-black dark:bg-white text-white dark:text-black text-xs font-black uppercase tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-xl dark:shadow-white/10 italic">
+        Access Passes
+      </a>
+      
+      <!-- Mobile Menu Toggle -->
+      <div class="md:hidden flex items-center">
+        <button id="mobile-menu-btn" class="p-2.5 text-gray-500 hover:text-black dark:hover:text-white transition-colors hover:bg-black/5 dark:hover:bg-white/5 rounded-xl border border-transparent active:border-cyan-500/20">
+          <svg id="mobile-icon-hamburger" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+          <svg id="mobile-icon-close" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+<MobileNavigation />
+
+<style>
+  /* Sticky blurring fix */
+  header {
+    -webkit-backdrop-filter: blur(20px);
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Light Mode Scrolled */
+  header.scrolled {
+    background-color: rgba(255, 255, 255, 0.98) !important;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.05) !important;
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+
+  /* Dark Mode Scrolled - Using html.dark for maximum reliability */
+  html.dark header.scrolled {
+    background-color: #0d0d0d !important;
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.7);
+    border-color: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  /* Ensure text colors are forced for readability in scrolled state */
+  header.scrolled nav a, 
+  header.scrolled nav button {
+    color: #374151 !important; /* gray-700 */
+  }
+  html.dark header.scrolled nav a, 
+  html.dark header.scrolled nav button {
+    color: #e5e7eb !important; /* gray-200 */
+  }
+
+  header.scrolled .text-xl {
+    color: #000000 !important;
+  }
+  html.dark header.scrolled .text-xl {
+    color: #ffffff !important;
+  }
+
+</style>
+
+<script>
+  // Scroll-enhanced header
+  const header = document.querySelector('header');
+  if (header) {
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+  }
+
+  // Mobile menu toggle
+  function initMobileMenu() {
+    const btn = document.getElementById('mobile-menu-btn');
+    const panel = document.getElementById('mobile-menu-panel');
+    const backdrop = document.getElementById('mobile-menu-backdrop');
+    const closeBtn = document.getElementById('mobile-menu-close');
+    const iconHamburger = document.getElementById('mobile-icon-hamburger');
+    const iconClose = document.getElementById('mobile-icon-close');
+
+    if (!btn || !panel || !backdrop) {
+      console.warn('Mobile menu elements not found');
+      return;
+    }
+
+    let isMenuOpen = false;
+
+    function toggleMenu(forceClose = false) {
+      isMenuOpen = forceClose ? false : !isMenuOpen;
+      
+      if (isMenuOpen) {
+        panel.classList.remove('translate-x-full');
+        backdrop.classList.remove('hidden');
+        iconHamburger?.classList.add('hidden');
+        iconClose?.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      } else {
+        panel.classList.add('translate-x-full');
+        backdrop.classList.add('hidden');
+        iconHamburger?.classList.remove('hidden');
+        iconClose?.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    }
+
+    // Toggle logic
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMenu();
+    });
+
+    closeBtn?.addEventListener('click', () => toggleMenu(true));
+    backdrop.addEventListener('click', () => toggleMenu(true));
+
+    // Close on any nav link click inside the panel
+    panel.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => toggleMenu(true));
+    });
+
+    // Cleanup for view transitions
+    document.addEventListener('astro:before-preparation', () => toggleMenu(true), { once: true });
+  }
+
+  // Initial load
+  initMobileMenu();
+
+  // Re-init after Astro transitions
+  document.addEventListener('astro:page-load', initMobileMenu);
+</script>

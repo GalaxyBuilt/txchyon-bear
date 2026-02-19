@@ -1,0 +1,79 @@
+---
+// src/pages/bear/blog/[pillar]/[subcategory]/[slug].astro
+import Base from "@/layouts/Base.astro";
+import PostSingle from "@/partials/PostSingle.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  return posts.map((post) => {
+    // Expected path: /bear/blog/{pillar}/{subcategory}/{slug}
+    // params should match the folder structure and slug
+    return {
+      params: { 
+        pillar: post.data.pillar,
+        subcategory: post.data.subcategory,
+        slug: post.slug.split('/').pop() 
+      },
+      props: { post },
+    };
+  });
+}
+
+const { post } = Astro.props;
+const { 
+  title, 
+  meta_title, 
+  image, 
+  description, 
+  hasGatedContent,
+  isFullyGated,
+  noindex,
+  canonical 
+} = post.data;
+
+// Escape HTML utility
+const escapeHtml = (text) => {
+  if (!text) return '';
+  return text.toString()
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+    .trim();
+};
+
+const postImage = image || `/images/posts/default-bear-og.jpg`;
+const escapedDescription = escapeHtml(description);
+---
+
+<Base
+  title={title}
+  meta_title={meta_title}
+  image={String(postImage)}
+  description={escapedDescription}
+  hasGatedContent={hasGatedContent}
+  isFullyGated={isFullyGated}
+  noindex={noindex}
+  canonical={canonical}
+>
+  <div class="blog-post-container bg-bear-bg text-bear-text min-h-screen">
+    <div class="max-w-4xl mx-auto px-4 py-12">
+      <div class="breadcrumb text-[10px] font-black uppercase tracking-widest mb-8 opacity-50 italic">
+        <a href="/bear" class="hover:text-red-500">Bear</a> / 
+        <a href={`/bear/blog/${post.data.pillar}`} class="hover:text-red-500">{post.data.pillar}</a> / 
+        <a href={`/bear/blog/${post.data.pillar}/${post.data.subcategory}`} class="hover:text-red-500">{post.data.subcategory}</a>
+      </div>
+      
+      <PostSingle post={post} />
+    </div>
+  </div>
+</Base>
+
+<style>
+  .blog-post-container {
+    background-color: #0f1113;
+    color: #e0e0e0;
+  }
+</style>

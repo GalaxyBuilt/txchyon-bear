@@ -1,0 +1,187 @@
+---
+import TwSizeIndicator from "@/components/TwSizeIndicator.astro";
+import config from "@/config/config.json";
+import theme from "@/config/theme.json";
+import Footer from "@/partials/Footer.astro";
+import Header from "@/partials/Header.astro";
+import FloatingBubble from "@/components/FloatingBubble.jsx";
+import "@/styles/main.css";
+import { AstroFont } from "astro-font";
+import { ClientRouter } from "astro:transitions";
+import SEO from "@/layouts/components/SEO.astro";  // <-- ADD THIS BACK
+
+const pf = theme.fonts.font_family.primary;
+let fontPrimary;
+if (theme.fonts.font_family.primary) {
+  fontPrimary = theme.fonts.font_family.primary
+    .replace(/\+/g, " ")
+    .replace(/:[ital,]*[ital@]*[wght@]*[0-9,;]+/gi, "");
+}
+
+export interface Props {
+  title?: string;
+  meta_title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+  canonical?: string;
+}
+
+const { title, meta_title, description, image, noindex, canonical } = Astro.props;
+
+// === IMPROVED: HTML escape function that handles already-encoded entities ===
+const escapeHtml = (text) => {
+  if (!text) return '';
+  
+  // First, decode any existing HTML entities to avoid double-encoding
+  let processed = text.toString()
+    .replace(/&amp;/g, '&')   // Decode &amp; to &
+    .replace(/&lt;/g, '<')    // Decode &lt; to <
+    .replace(/&gt;/g, '>')    // Decode &gt; to >
+    .replace(/&quot;/g, '"')  // Decode &quot; to "
+    .replace(/&#039;/g, "'")  // Decode &#039; to '
+    .replace(/&nbsp;/g, ' '); // Decode &nbsp; to space
+  
+  // Then properly encode everything for HTML attributes
+  return processed
+    .replace(/&/g, '&amp;')   // Encode & to &amp;
+    .replace(/</g, '&lt;')    // Encode < to &lt;
+    .replace(/>/g, '&gt;')    // Encode > to &gt;
+    .replace(/"/g, '&quot;')  // Encode " to &quot;
+    .replace(/'/g, '&#039;')  // Encode ' to &#039;
+    .trim();
+};
+
+// Use escapeHtml for meta tags
+const finalTitle = escapeHtml(meta_title ?? title ?? config.site.title);
+const finalDescription = escapeHtml(description ?? config.metadata.meta_description);
+
+// Handle image prop safely
+const finalImage = image && typeof image === 'string' && image.trim()
+  ? `${config.site.base_url}${image.startsWith("/") ? "" : "/"}${image}`
+  : `${config.site.base_url}${config.metadata.meta_image}`;
+
+// FIXED: Normalize canonical URL - remove trailing slash and query parameters
+const cleanPath = Astro.url.pathname.replace(/\/$/, ""); // Remove trailing slash
+const finalCanonical = canonical ?? `${config.site.base_url}${cleanPath}`;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    {/* GOOGLE ANALYTICS GA4 - LIVE */}
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W77T47Y58P"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-W77T47Y58P');
+    </script>
+
+    {/* Ahrefs Web Analytics */}
+    <script src="https://analytics.ahrefs.com/analytics.js" data-key="BM9NrhHESqRca7xP0Vuqeg" async></script>
+
+    {/* Google Search Console verification placeholder */}
+    {/* <meta name="google-site-verification" content="your-code-here" /> */}
+
+    <link rel="shortcut icon" href={config.site.favicon} />
+    <meta name="theme-name" content="bookworm-light-astro" />
+    <meta name="msapplication-TileColor" content="#000000" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
+    <meta name="generator" content={Astro.generator} />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <AstroFont
+      config={[
+        {
+          src: [],
+          preload: false,
+          display: "swap",
+          name: fontPrimary!,
+          fallback: "sans-serif",
+          cssVariable: "font-primary",
+          googleFontsURL: `https://fonts.googleapis.com/css2?family=${pf}&display=swap`,
+        },
+      ]}
+    />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+
+    <!-- ========== USE SEO COMPONENT INSTEAD OF DUPLICATE TAGS ========== -->
+    <SEO
+      title={finalTitle}
+      description={finalDescription}
+      image={finalImage}
+      canonical={finalCanonical}
+      noindex={!!noindex}
+      type="website"
+    />
+    <!-- ========== END SEO COMPONENT ========== -->
+
+    <link rel="alternate" type="application/rss+xml" title="Txchyon RSS" href="/rss.xml" />
+    <link rel="alternate" type="application/feed+json" title="Txchyon JSON Feed" href="/feed.json" />
+
+    <ClientRouter />
+    <meta name="author" content={config.metadata.meta_author} />
+  </head>
+
+  <body class="bg-body text-text font-primary font-normal leading-relaxed dark:bg-dark dark:text-light">
+    <TwSizeIndicator />
+    <Header />
+    <main id="main-content" class="min-h-[60vh]">
+      <slot />
+    </main>
+    <Footer />
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <FloatingBubble client:load />
+  
+    <!-- SIMPLE DARK MODE SCRIPT -->
+    <script is:global>
+      // Initialize theme
+      const savedTheme = localStorage.getItem('theme');
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+      
+      // Apply initial theme
+      document.documentElement.setAttribute('data-theme', initialTheme);
+      if (initialTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+      
+      // Save if not already saved
+      if (!savedTheme) {
+        localStorage.setItem('theme', initialTheme);
+      }
+      
+      // Toggle function
+      function toggleDarkMode() {
+        const html = document.documentElement;
+        const isDark = html.classList.contains('dark');
+        const newTheme = isDark ? 'light' : 'dark';
+        
+        html.setAttribute('data-theme', newTheme);
+        html.classList.toggle('dark');
+        localStorage.setItem('theme', newTheme);
+      }
+      
+      // Add click listener when DOM loads
+      document.addEventListener('DOMContentLoaded', () => {
+        const toggleBtn = document.getElementById('theme-toggle');
+        if (toggleBtn) {
+          toggleBtn.addEventListener('click', toggleDarkMode);
+        }
+      });
+      
+      // Re-attach listener on page navigation (for Astro View Transitions)
+      document.addEventListener('astro:page-load', () => {
+        const toggleBtn = document.getElementById('theme-toggle');
+        if (toggleBtn) {
+          // Remove existing listener and re-add
+          toggleBtn.replaceWith(toggleBtn.cloneNode(true));
+          document.getElementById('theme-toggle').addEventListener('click', toggleDarkMode);
+        }
+      });
+    </script>
+  </body>
+</html>

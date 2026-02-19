@@ -1,0 +1,134 @@
+---
+// src/components/BullBearToggle.astro
+---
+
+<div class="bull-bear-toggle-container">
+  <button id="ecosystem-toggle" class="ecosystem-toggle" aria-label="Toggle Ecosystem">
+    <div class="toggle-track">
+      <div class="toggle-thumb">
+        <span class="bull-icon">🐂</span>
+        <span class="bear-icon">🐻</span>
+      </div>
+    </div>
+    <span class="toggle-label text-[10px] font-black uppercase tracking-widest ml-2 italic"></span>
+  </button>
+</div>
+
+<style>
+.ecosystem-toggle {
+  display: flex;
+  align-items: center;
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 4px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.dark .ecosystem-toggle {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.1);
+}
+
+.toggle-track {
+  width: 48px;
+  height: 24px;
+  position: relative;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.dark .toggle-thumb {
+  background: #1f2226;
+}
+
+.bull-icon, .bear-icon {
+  font-size: 14px;
+}
+
+.bear-icon {
+  display: none;
+}
+
+/* Bear State */
+[data-theme="bear"] .toggle-thumb {
+  transform: translateX(24px);
+  background: var(--color-bear-hover, #b22222);
+}
+
+[data-theme="bear"] .bull-icon {
+  display: none;
+}
+
+[data-theme="bear"] .bear-icon {
+  display: block;
+}
+
+[data-theme="bear"] .ecosystem-toggle {
+  border-color: var(--color-bear-hover, #b22222);
+}
+</style>
+
+<script>
+  const ECOSYSTEM_KEY = 'txchyon-ecosystem';
+  
+  function updateToggleUI() {
+    const ecosystem = localStorage.getItem(ECOSYSTEM_KEY) || 'bull';
+    const label = document.querySelector('.toggle-label');
+    if (label) {
+      label.textContent = ecosystem === 'bear' ? 'Bear Mode' : 'Bull Mode';
+    }
+    
+    if (ecosystem === 'bear') {
+      document.documentElement.setAttribute('data-theme', 'bear');
+    } else {
+      const theme = localStorage.getItem('txchyon-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+  }
+
+  function toggleEcosystem() {
+    const current = localStorage.getItem(ECOSYSTEM_KEY) || 'bull';
+    const next = current === 'bull' ? 'bear' : 'bull';
+    
+    localStorage.setItem(ECOSYSTEM_KEY, next);
+    updateToggleUI();
+    
+    // Redirection Logic
+    if (next === 'bear') {
+      if (!window.location.pathname.startsWith('/bear')) {
+        window.location.href = '/bear';
+      }
+    } else {
+      if (window.location.pathname.startsWith('/bear')) {
+        window.location.href = '/';
+      }
+    }
+  }
+
+  const btn = document.getElementById('ecosystem-toggle');
+  if (btn) {
+    btn.addEventListener('click', toggleEcosystem);
+  }
+
+  // Initial UI sync
+  updateToggleUI();
+  
+  // Re-init after transitions
+  document.addEventListener('astro:page-load', updateToggleUI);
+</script>

@@ -1,0 +1,89 @@
+{
+  "main": [
+    {
+      "name": "Terminals",
+      "dropdown": [
+        {
+          "name": "Project Omega (SOL)",
+          "url": "/omega"
+        },
+        {
+          "name": "Project Ultima (Intel)",
+          "url": "/ultima"
+        },
+        {
+          "name": "Project Genesis (BTC)",
+          "url": "https://txchyon.com/labs/genesis/login"
+        }
+      ]
+    },
+    {
+      "name": "Knowledge",
+      "dropdown": [
+        {
+          "name": "Getting Started",
+          "url": "/categories/getting-started"
+        },
+        {
+          "name": "Airdrop Farming",
+          "url": "/categories/airdrop-farming"
+        },
+        {
+          "name": "DeFi & Yield",
+          "url": "/categories/defi-yield"
+        },
+        {
+          "name": "Security & Privacy",
+          "url": "/categories/security-privacy"
+        },
+        {
+          "name": "Alpha & Insider",
+          "url": "/categories/alpha-insider"
+        },
+        {
+          "name": "Web3 Gaming",
+          "url": "/categories/web3-gaming-metaverse"
+        },
+        {
+          "name": "View Pillars",
+          "url": "/categories"
+        },
+        {
+          "name": "Research Cache",
+          "url": "/blog"
+        }
+      ]
+    },
+    {
+      "name": "Growth",
+      "url": "/services"
+    },
+    {
+      "name": "Shop",
+      "url": "/shop"
+    }
+  ],
+  "footer": [
+    {
+      "name": "Txchyon",
+      "url": "/"
+    },
+    {
+      "name": "Services",
+      "url": "/services"
+    },
+    {
+      "name": "Tools",
+      "url": "/tools"
+    },
+    {
+      "name": "Newsletter",
+      "url": "/newsletter"
+    },
+    {
+      "name": "Twitter",
+      "url": "https://twitter.com/txchyon",
+      "external": true
+    }
+  ]
+}

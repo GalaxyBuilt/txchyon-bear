@@ -1,0 +1,244 @@
+﻿---
+import SocialShare from "@/components/SocialShare.astro";
+import SimilarPosts from "@/components/SimilarPosts.astro";
+import config from "@/config/config.json";
+// REMOVED: import SEO from "@/layouts/components/SEO.astro"; <-- Remove this line
+import { getSinglePage } from "@/lib/contentParser.astro";
+import dateFormat from "@/lib/utils/dateFormat";
+import similarItems from "@/lib/utils/similarItems";
+import { humanize, markdownify, slugify } from "@/lib/utils/textConverter";
+import { Image } from "astro:assets";
+import { render } from "astro:content";
+import { BiCalendarEdit, BiCategoryAlt } from "react-icons/bi";
+
+const allAuthors = await getSinglePage("authors");
+const posts = await getSinglePage("posts");
+const { post } = Astro.props;
+
+const similarPosts = posts.filter(p => p.slug !== post.slug && p.data.category === post.data.category).slice(0, 3);
+const { Content } = await render(post);
+const { title, description, authors, categories, image, date, tags } = post.data;
+
+const siteUrl = config.site.base_url;
+const canonicalUrl = `${siteUrl}${Astro.url.pathname}`;
+const ogImage = image ? `${siteUrl}${image}` : `${siteUrl}/images/og-txchyon.png`;
+
+// Safe author handling
+const getAuthorNames = () => {
+  if (!authors || !Array.isArray(authors)) return "Galaxy";
+  
+  const names = authors
+    .map(a => a?.data?.name)
+    .filter(name => name && typeof name === 'string');
+  
+  return names.length > 0 ? names.join(", ") : "Galaxy";
+};
+
+const authorNames = getAuthorNames();
+---
+
+<!-- No duplicate SEO or viewport meta needed here, handled by Base layout -->
+
+<section class="section">
+  <div class="container">
+    <article class="row justify-center">
+      <!-- Title + meta info (unchanged) -->
+      <div class="md:col-10 text-center">
+        <h1 set:html={markdownify(title)} class="h2" />
+        <ul class="mt-4 flex flex-wrap items-center justify-center text-text">
+          <!-- Author, Date, Categories – with safe handling -->
+          {authorNames !== "Galaxy" && (
+            <li class="mr-4 flex items-center">
+              {authorNames.split(", ").map((name: string, i: number) => (
+                <span>
+                  {i > 0 && ", "}
+                  <a
+                    href={`/authors/${slugify(name)}`}
+                    class="ml-1 hover:text-primary"
+                  >
+                    {name}
+                  </a>
+                </span>
+              ))}
+            </li>
+          )}
+          <li class="mr-4 flex items-center">
+            <BiCalendarEdit class="mr-1" />
+            {dateFormat(date)}
+          </li>
+          {categories && (
+            <li class="flex items-center">
+              <BiCategoryAlt class="mr-1" />
+              {categories.map((category: string, i: number) => (
+                <span>
+                  {i > 0 && ", "}
+                  <a
+                    href={`/categories/${slugify(category)}`}
+                    class="ml-1 hover:text-primary"
+                  >
+                    {humanize(category)}
+                  </a>
+                </span>
+              ))}
+            </li>
+          )}
+        </ul>
+      </div>
+
+      <!-- Featured image (unchanged) -->
+      {image && (
+        <div class="col-12 mt-8 mb-2">
+          <img src={image} height={500} width={1000} alt={title} class="rounded-lg w-full" />
+        </div>
+      )}
+
+      <!-- Main content -->
+      <div class="md:col-10">
+        <div class="content mb-16 text-left">
+          <Content />
+          <!-- Twitter Follow CTA -->
+          <div class="mt-12 pt-8 border-t border-gray-100 dark:border-gray-800/50">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <p class="text-[11px] font-mono text-gray-400 dark:text-gray-500 uppercase tracking-widest italic">
+                Stay in the loop →
+              </p>
+              <div class="flex items-center gap-3">
+                <a
+                  href="https://twitter.com/txchyon"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-gray-200 dark:border-white/10 text-[11px] font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white transition-all"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  @txchyon
+                </a>
+                <a
+                  href="https://twitter.com/galaxybuilt"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-gray-200 dark:border-white/10 text-[11px] font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white transition-all"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  @galaxybuilt
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800/50">
+            <p class="text-[10px] tracking-widest uppercase font-mono text-gray-400 dark:text-gray-600 text-center">
+              Powered by <a href="https://everrank.app" target="_blank" rel="noopener noreferrer" class="hover:text-blue-500 dark:hover:text-blue-400 transition-colors">EverRank</a>, and created by <a href="https://galaxybuilt.dev" target="_blank" rel="noopener noreferrer" class="hover:text-blue-500 dark:hover:text-blue-400 transition-colors">GalaxyBuilt</a>
+            </p>
+          </div>
+        </div>
+
+
+        <!-- MOBILE-OPTIMIZED BEEHIIV FORM WITH PLAIN CSS -->
+        <!-- Updated: 2024-12-08 for mobile responsiveness -->
+        <div class="my-16 md:my-20 px-4 sm:px-6 lg:px-8">
+          <div class="mx-auto max-w-2xl rounded-2xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-6 sm:p-8 lg:p-10 text-center shadow-lg">
+            
+            <!-- SIMPLE CSS VERSION - Bypasses Tailwind -->
+            <h3 class="desktop-title">Get Weekly DeFi Alpha in Your Inbox</h3>
+            <h3 class="mobile-title">Weekly DeFi Alpha</h3>
+            
+            <p class="desktop-desc">56k+ traders getting my private newsletter every week</p>
+            <p class="mobile-desc">Join To Download our Ebook Free</p>
+
+            <style>
+              /* Mobile first */
+              .desktop-title, .desktop-desc {
+                display: none;
+              }
+              
+              .mobile-title, .mobile-desc {
+                display: block;
+              }
+              
+              .mobile-title, .desktop-title {
+                font-size: 1.5rem; /* text-2xl */
+                font-weight: 700; /* font-bold */
+                margin-bottom: 0.75rem; /* mb-3 */
+                line-height: 1.25; /* leading-tight */
+              }
+              
+              .mobile-desc, .desktop-desc {
+                font-size: 1rem; /* text-base */
+                color: #4b5563; /* text-gray-600 */
+                margin-bottom: 2rem; /* mb-8 */
+                max-width: 36rem; /* max-w-xl */
+                margin-left: auto;
+                margin-right: auto;
+                line-height: 1.625; /* leading-relaxed */
+              }
+              
+              .dark .mobile-desc, .dark .desktop-desc {
+                color: #9ca3af; /* dark:text-gray-400 */
+              }
+              
+              /* Desktop styles */
+              @media (min-width: 640px) {
+                .desktop-title, .desktop-desc {
+                  display: block !important;
+                }
+                .mobile-title, .mobile-desc {
+                  display: none !important;
+                }
+                
+                .desktop-title {
+                  font-size: 1.875rem; /* text-3xl */
+                  margin-bottom: 1rem; /* mb-4 */
+                }
+                
+                .desktop-desc {
+                  font-size: 1.125rem; /* text-lg */
+                  margin-bottom: 2.5rem; /* sm:mb-10 */
+                }
+              }
+            </style>
+
+            <!-- FIXED: Wider Beehiiv iframe (500px) for proper email field -->
+            <div class="w-full flex justify-center">
+              <script async src="https://subscribe-forms.beehiiv.com/embed.js"></script>
+              <iframe
+                src="https://subscribe-forms.beehiiv.com/cc63cad9-7786-4f32-badd-628ad1226266"
+                class="beehiiv-embed"
+                data-test-id="beehiiv-embed"
+                frameborder="0"
+                scrolling="no"
+                style="width: 500px; height: 420px; border: none; border-radius: 12px; max-width: 100%;"
+                loading="lazy"
+              ></iframe>
+            </div>
+
+            <noscript>
+              <p class="text-sm text-gray-500 mt-4">
+                <a href="https://txchyon.beehiiv.com/subscribe" target="_blank" rel="noopener" class="underline hover:text-primary">
+                  Subscribe to the newsletter
+                </a>
+              </p>
+            </noscript>
+          </div>
+        </div>
+
+        <!-- Tags and Share Buttons -->
+        <div class="my-20 text-center border-t-2 border-gray-200 dark:border-gray-700 pt-12">
+          <!-- Tags -->
+          <div class="flex flex-wrap justify-center gap-3 mb-12">
+            {tags?.map((tag: string) => (
+              <a href={`/tags/${slugify(tag)}`} class="px-5 py-2 bg-gray-100 dark:bg-gray-800 rounded-full text-sm font-medium hover:text-primary">
+                #{humanize(tag)}
+              </a>
+            ))}
+          </div>
+
+          <!-- SHARE BUTTONS – NOW VISIBLE -->
+          <SocialShare title={title} url={Astro.url} />
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+        <!-- High-Fidelity Read Next Section -->
+        <SimilarPosts posts={similarPosts} />

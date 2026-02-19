@@ -1,0 +1,1039 @@
+---
+import TwSizeIndicator from "@/components/TwSizeIndicator.astro";
+import config from "@/config/config.json";
+import theme from "@/config/theme.json";
+import Footer from "@/partials/Footer.astro";
+import Header from "@/partials/Header.astro";
+import "@/styles/global.css";
+import "@/styles/main.css";
+import "@/styles/bear-theme.css";
+import { AstroFont } from "astro-font";
+import { ClientRouter } from "astro:transitions";
+import SEO from "@/layouts/components/SEO.astro";
+import TxchyaChat from "@/layouts/components/TxchyaChat.astro";
+
+const currentPath = Astro.url.pathname;
+
+// Get frontmatter props
+const { 
+  title, 
+  meta_title, 
+  description, 
+  image, 
+  noindex, 
+  canonical,
+  hasGatedContent = false,
+  gateType = 'partial'
+} = Astro.props;
+
+console.log('🎯 Gate Configuration:', {
+  path: currentPath,
+  hasGatedContent,
+  gateType
+});
+
+const pf = theme.fonts.font_family.primary;
+let fontPrimary;
+if (theme.fonts.font_family.primary) {
+  fontPrimary = theme.fonts.font_family.primary
+    .replace(/\+/g, " ")
+    .replace(/:[ital,]*[ital@]*[wght@]*[0-9,;]+/gi, "");
+}
+
+export interface Props {
+  title?: string;
+  meta_title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+  canonical?: string;
+  hasGatedContent?: boolean;
+  gateType?: 'partial' | 'full';
+}
+
+const finalTitle = meta_title ?? title ?? config.site.title;
+const finalDescription = description ?? config.metadata.meta_description;
+
+const finalImage = image && typeof image === 'string' && image.trim()
+  ? (image.startsWith("http") ? image : `${config.site.base_url}${image.startsWith("/") ? "" : "/"}${image}`)
+  : config.metadata.meta_image;
+
+const cleanPath = Astro.url.pathname.replace(/\/$/, "");
+const finalCanonical = canonical ?? `${config.site.base_url}${cleanPath}`;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W77T47Y58P"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-W77T47Y58P');
+    </script>
+
+    <!-- GOOGLE ADSENSE VERIFICATION - ADDED -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4395640740127630"
+     crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-4395640740127630">
+
+    <!-- Ahrefs Analytics -->
+    <script src="https://analytics.ahrefs.com/analytics.js" data-key="BM9NrhHESqRca7xP0Vuqeg" async></script>
+
+    <link rel="shortcut icon" href={config.site.favicon} />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png" />
+    <meta name="theme-name" content="bookworm-light-astro" />
+    <meta name="msapplication-TileColor" content="#000000" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="generator" content={Astro.generator} />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="format-detection" content="telephone=no" />
+    
+  
+    <AstroFont
+      config={[
+        {
+          src: [],
+          preload: false,
+          display: "swap",
+          name: fontPrimary!,
+          fallback: "sans-serif",
+          cssVariable: "font-primary",
+          googleFontsURL: `https://fonts.googleapis.com/css2?family=${pf}&display=swap`,
+        },
+      ]}
+    />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+
+    <SEO
+      title={finalTitle}
+      description={finalDescription}
+      image={finalImage}
+      canonical={finalCanonical}
+      noindex={!!noindex}
+      type="website"
+    />
+
+    <!-- SCHEMA MARKUP -->
+    {title && (
+      <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": finalTitle,
+        "description": finalDescription,
+        "image": finalImage,
+        "author": {
+          "@type": "Person",
+          "name": config.metadata.meta_author
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": config.site.title,
+          "logo": {
+            "@type": "ImageObject",
+            "url": `${config.site.base_url}/images/logo.png`
+          }
+        },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": Astro.url.href
+        }
+      })} />
+    )}
+
+    <link rel="alternate" type="application/rss+xml" title="Txchyon RSS" href="/rss.xml" />
+    <link rel="alternate" type="application/feed+json" title="Txchyon Research Hub JSON Feed" href="/feed.json" />
+
+    <ClientRouter />
+    
+    <!-- GATE STYLES - PARTIAL GATE VERSION -->
+    {hasGatedContent && (
+      <style>
+        /* Gate Overlay - PARTIAL POSITIONING */
+        .txchyon-gate-overlay {
+          position: absolute !important; /* NOT fixed - moves with content */
+          top: 0 !important;
+          left: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          background: rgba(255, 255, 255, 0.95) !important;
+          backdrop-filter: blur(15px) !important;
+          -webkit-backdrop-filter: blur(15px) !important;
+          z-index: 2147483647 !important; /* Maximum z-index */
+          display: none !important;
+          justify-content: center !important;
+          align-items: center !important;
+          opacity: 0 !important;
+          transition: opacity 0.4s ease !important;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+          pointer-events: auto !important;
+        }
+        
+        .txchyon-gate-overlay.active {
+          opacity: 1 !important;
+          display: flex !important;
+        }
+        
+        /* Gate Modal */
+        .txchyon-gate-modal {
+          background: white !important;
+          border: 2px solid #000 !important;
+          box-shadow: 20px 20px 0px rgba(0, 0, 0, 0.2) !important;
+          padding: 3rem !important;
+          max-width: 520px !important;
+          width: 90% !important;
+          text-align: center !important;
+          border-radius: 8px !important;
+          position: relative !important;
+          animation: modalSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+          transform-origin: center !important;
+          z-index: 2147483647 !important;
+          pointer-events: auto !important;
+        }
+        
+        @keyframes modalSlideUp {
+          from {
+            opacity: 0;
+            transform: translateY(40px) scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        
+        /* Gate Header */
+        .gate-header {
+          margin-bottom: 1.5rem !important;
+        }
+        
+        .gate-icon {
+          font-size: 3.5rem !important;
+          margin-bottom: 1rem !important;
+          display: block !important;
+          animation: float 3s ease-in-out infinite !important;
+        }
+        
+        @keyframes float {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          25% { transform: translateY(-8px) rotate(5deg); }
+          75% { transform: translateY(-4px) rotate(-5deg); }
+        }
+        
+        .gate-title {
+          font-size: 2rem !important;
+          font-weight: 900 !important;
+          margin: 0 0 0.5rem 0 !important;
+          color: #000 !important;
+          letter-spacing: -0.5px !important;
+          line-height: 1.2 !important;
+        }
+        
+        .gate-subtitle {
+          font-size: 1.15rem !important;
+          color: #4b5563 !important;
+          margin: 0 !important;
+          line-height: 1.6 !important;
+          font-weight: 400 !important;
+        }
+        
+        /* Gate Form */
+        .gate-form {
+          margin: 2rem 0 !important;
+        }
+        
+        .gate-input {
+          width: 100% !important;
+          padding: 1rem 1.25rem !important;
+          font-size: 1.05rem !important;
+          border: 2px solid #d1d5db !important;
+          border-radius: 8px !important;
+          margin-bottom: 1rem !important;
+          box-sizing: border-box !important;
+          transition: all 0.3s ease !important;
+          font-family: inherit !important;
+          background: white !important;
+        }
+        
+        .gate-input:focus {
+          outline: none !important;
+          border-color: #000 !important;
+          box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1) !important;
+          transform: translateY(-2px) !important;
+        }
+        
+        .gate-button {
+          width: 100% !important;
+          padding: 1.1rem 1.25rem !important;
+          background: linear-gradient(135deg, #000 0%, #333 100%) !important;
+          color: white !important;
+          border: none !important;
+          font-size: 1.1rem !important;
+          font-weight: 800 !important;
+          border-radius: 8px !important;
+          cursor: pointer !important;
+          transition: all 0.3s ease !important;
+          font-family: inherit !important;
+          letter-spacing: -0.2px !important;
+          text-transform: uppercase !important;
+          letter-spacing: 1px !important;
+        }
+        
+        .gate-button:hover {
+          background: linear-gradient(135deg, #111 0%, #444 100%) !important;
+          transform: translateY(-3px) !important;
+          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2) !important;
+        }
+        
+        .gate-button:active {
+          transform: translateY(-1px) !important;
+        }
+        
+        /* Gate Footer */
+        .gate-footer {
+          margin-top: 2rem !important;
+          padding-top: 1.5rem !important;
+          border-top: 2px solid #e5e7eb !important;
+        }
+        
+        .gate-alternative {
+          background: transparent !important;
+          color: #000 !important;
+          border: 2px solid #000 !important;
+          padding: 0.85rem 1.75rem !important;
+          font-weight: 700 !important;
+          border-radius: 8px !important;
+          cursor: pointer !important;
+          transition: all 0.3s ease !important;
+          font-size: 1rem !important;
+          font-family: inherit !important;
+          width: 100% !important;
+          margin-bottom: 1rem !important;
+        }
+        
+        .gate-alternative:hover {
+          background: #000 !important;
+          color: white !important;
+          transform: translateY(-2px) !important;
+        }
+        
+        .gate-legal {
+          font-size: 0.85rem !important;
+          color: #6b7280 !important;
+          margin-top: 1rem !important;
+          line-height: 1.5 !important;
+        }
+        
+        .gate-legal a {
+          color: #000 !important;
+          text-decoration: underline !important;
+          font-weight: 600 !important;
+        }
+        
+        /* Content Blur Effect - FOR PARTIAL GATE */
+        .gate-blur {
+          filter: blur(8px) !important;
+          pointer-events: none !important;
+          user-select: none !important;
+          opacity: 0.6 !important;
+          transition: filter 0.5s ease, opacity 0.5s ease !important;
+        }
+        
+        /* Keep first 40% clear */
+        .gate-clear {
+          filter: blur(0) !important;
+          opacity: 1 !important;
+          pointer-events: auto !important;
+        }
+        
+        /* Close Button */
+        .gate-close {
+          position: absolute !important;
+          top: 1.2rem !important;
+          right: 1.2rem !important;
+          background: #f3f4f6 !important;
+          border: 2px solid #d1d5db !important;
+          font-size: 1.8rem !important;
+          cursor: pointer !important;
+          color: #374151 !important;
+          padding: 0.5rem !important;
+          border-radius: 50% !important;
+          transition: all 0.3s ease !important;
+          width: 3rem !important;
+          height: 3rem !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          line-height: 1 !important;
+          z-index: 2147483647 !important;
+        }
+        
+        .gate-close:hover {
+          color: #000 !important;
+          background: #e5e7eb !important;
+          border-color: #9ca3af !important;
+          transform: rotate(90deg) !important;
+        }
+        
+        /* Success State */
+        .gate-success .gate-icon {
+          color: #10b981 !important;
+          animation: none !important;
+        }
+        
+        .gate-success .gate-button {
+          background: #10b981 !important;
+        }
+        
+        /* Force all elements to be visible */
+        .txchyon-gate-overlay * {
+          visibility: visible !important;
+          opacity: 1 !important;
+        }
+        
+        /* Responsive */
+        @media (max-width: 640px) {
+          .txchyon-gate-modal {
+            padding: 2rem 1.5rem !important;
+            width: 95% !important;
+            margin: 1rem !important;
+          }
+          
+          .gate-title {
+            font-size: 1.7rem !important;
+          }
+          
+          .gate-subtitle {
+            font-size: 1.05rem !important;
+          }
+          
+          .gate-icon {
+            font-size: 2.8rem !important;
+          }
+        }
+      </style>
+    )}
+    
+    <!-- ECOSYSTEM THEME SCRIPT -->
+    <script is:inline>
+      (function() {
+        const THEME_KEY = 'txchyon-theme';
+        const ECOSYSTEM_KEY = 'txchyon-ecosystem'; // 'bull' or 'bear'
+        const savedTheme = localStorage.getItem(THEME_KEY);
+        const savedEcosystem = localStorage.getItem(ECOSYSTEM_KEY);
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const currentPath = window.location.pathname;
+
+        // Path-based auto-selection
+        let ecosystem = savedEcosystem;
+        if (currentPath.startsWith('/bear')) {
+          ecosystem = 'bear';
+          if (savedEcosystem !== 'bear') {
+            localStorage.setItem(ECOSYSTEM_KEY, 'bear');
+          }
+        } else if (currentPath === '/') {
+          // If at root, default to bull unless explicitly bear
+        }
+
+        const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+        
+        // Apply Ecosystem
+        if (ecosystem === 'bear') {
+          document.documentElement.setAttribute('data-theme', 'bear');
+          document.documentElement.classList.add('dark'); // Bear is dark by default
+        } else {
+          document.documentElement.setAttribute('data-theme', theme);
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        }
+        
+        // Sync meta theme color
+        const themeColor = (ecosystem === 'bear' || theme === 'dark') ? '#0f1113' : '#ffffff';
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', themeColor);
+        
+        if (!savedTheme) {
+          localStorage.setItem(THEME_KEY, theme);
+        }
+      })();
+    </script>
+    
+    <style>
+      * {
+        transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+      }
+    </style>
+  </head>
+
+  <body class="bg-body text-text font-primary font-normal leading-relaxed dark:bg-dark dark:text-light">
+    <TwSizeIndicator />
+    <Header />
+    <main id="main-content" class="min-h-[60vh]">
+      <slot />
+    </main>
+    <Footer />
+    <TxchyaChat />
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  
+    <!-- PARTIAL GATE IMPLEMENTATION - WITH HYBRID BEEHIV/MAGIC LINK -->
+    {hasGatedContent && (
+      <>
+        <!-- Gate HTML Structure -->
+        <div id="txchyon-gate" class="txchyon-gate-overlay">
+          <div class="txchyon-gate-modal">
+            <button class="gate-close" aria-label="Close gate">×</button>
+            
+            <div class="gate-header">
+              <span class="gate-icon">🔐</span>
+              <h2 class="gate-title">Unlock All Our Full Guides</h2>
+              <p class="gate-subtitle">Join 12,000+ traders and investors in the Txchyon Research Hub to access step-by-step instructions, visual walkthroughs, how to's, AI prompts, tools, and more.</p>
+            </div>
+            
+            <div class="gate-form">
+              <input type="email" class="gate-input" placeholder="your.email@example.com" id="gate-email-input" required>
+              <button class="gate-button">
+                Get Your Txchyon Tesseract Pass
+              </button>
+            </div>
+            
+            <div class="gate-footer">
+              <button class="gate-alternative">
+                Already a subscriber? Click to unlock
+              </button>
+              <p class="gate-legal">
+                By subscribing, you agree to our <a href="/privacy">Privacy Policy</a> and consent to receive occasional updates.
+                You can unsubscribe anytime. No spam, ever.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Gate JavaScript - HYBRID BEEHIV/MAGIC LINK VERSION -->
+        <script>
+          console.log('🔐 PARTIAL GATE SYSTEM: Loading...');
+          
+          // Configuration - PARTIAL GATE
+          const GATE_CONFIG = {
+            isPartialGate: true, // THIS IS PARTIAL
+            scrollThreshold: 0.4, // 40% scroll
+            showAfterSeconds: 60, // 60 seconds timeout
+            forceShow: false // Set to true for testing
+          };
+          
+          // Beehiiv Configuration
+          const BEEHIV_CONFIG = {
+            publicationId: '62d85daa-7878-4a83-a78a-a15f6226c516',
+            apiKey: 'cf6c75e5-a417-46f9-a19b-5f82a324e38d',
+            magicLinkBase: 'https://magic.beehiiv.com/v1/cf6c75e5-a417-46f9-a19b-5f82a324e38d'
+          };
+          
+          console.log(`📋 Gate Type: ${GATE_CONFIG.isPartialGate ? 'Partial (40% visible)' : 'Full'}`);
+          console.log(`📧 Beehiiv: ${BEEHIV_CONFIG.publicationId}`);
+          
+          // Main function
+          function initGate() {
+            console.log('⚡ Initializing PARTIAL gate...');
+            
+            // Check if already subscribed
+            const hasAccess = localStorage.getItem('txchyon_subscriber') === 'true';
+            if (hasAccess && !GATE_CONFIG.forceShow) {
+              console.log('✅ Already subscribed');
+              return;
+            }
+            
+            // Setup button listeners
+            setupButtons();
+            
+            // FORCE SHOW FOR TESTING - REMOVE LATER
+            if (GATE_CONFIG.forceShow) {
+              console.log('🧪 FORCE SHOWING GATE FOR TESTING');
+              setTimeout(() => {
+                showGateWithBlur();
+              }, 1000);
+            }
+            
+            if (GATE_CONFIG.isPartialGate) {
+              console.log('⏸️ Partial gate: monitoring scroll (40% threshold)...');
+              setupPartialGate();
+            } else {
+              console.log('🚫 Full gate: showing immediately');
+              showGateWithBlur();
+            }
+          }
+          
+          // Setup button event listeners
+          function setupButtons() {
+            console.log('🔧 Setting up buttons...');
+            
+            // Unlock button
+            const unlockBtn = document.querySelector('.gate-button');
+            if (unlockBtn) {
+              unlockBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                unlockGate();
+              });
+            }
+            
+            // Alternative button
+            const altBtn = document.querySelector('.gate-alternative');
+            if (altBtn) {
+              altBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                checkExistingSubscription();
+              });
+            }
+            
+            // Close button
+            const closeBtn = document.querySelector('.gate-close');
+            if (closeBtn) {
+              closeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                closeGate();
+              });
+            }
+            
+            // Email input enter key
+            const emailInput = document.getElementById('gate-email-input');
+            if (emailInput) {
+              emailInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  unlockGate();
+                }
+              });
+            }
+          }
+          
+          // Setup partial gate (scroll detection)
+          function setupPartialGate() {
+            let gateShown = false;
+            
+            function checkScroll() {
+              if (gateShown) return;
+              
+              const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+              console.log(`📊 Scroll: ${scrollPercent.toFixed(1)}%`);
+              
+              if (scrollPercent >= (GATE_CONFIG.scrollThreshold * 100)) {
+                gateShown = true;
+                console.log('🎯 Reached 40%, showing PARTIAL gate!');
+                showGateWithBlur();
+                window.removeEventListener('scroll', checkScroll);
+              }
+            }
+            
+            window.addEventListener('scroll', checkScroll);
+            
+            // Also show after timeout
+            setTimeout(() => {
+              if (!gateShown) {
+                gateShown = true;
+                console.log('⏰ 60 seconds passed, showing gate!');
+                showGateWithBlur();
+              }
+            }, GATE_CONFIG.showAfterSeconds * 1000);
+          }
+          
+          // Show PARTIAL gate with blur effect (40% visible, 60% blurred)
+          function showGateWithBlur() {
+            console.log('🚀 Showing PARTIAL gate with blur (40% visible, 60% blurred)...');
+            
+            // DEBUG: Check if gate exists
+            const gate = document.getElementById('txchyon-gate');
+            console.log('🔍 Gate element exists:', !!gate);
+            
+            if (!gate) {
+              console.error('❌ CRITICAL: Gate element not found in DOM!');
+              console.error('❌ hasGatedContent is probably false for this page');
+              return;
+            }
+            
+            // 1. Calculate where to place the gate (at 40% scroll position)
+            const viewportHeight = window.innerHeight;
+            const contentHeight = document.body.scrollHeight;
+            const fortyPercentHeight = contentHeight * 0.4;
+            
+            console.log('📏 Partial gate positioning:', {
+              viewportHeight,
+              contentHeight,
+              fortyPercentHeight: Math.round(fortyPercentHeight),
+              currentScroll: Math.round(window.scrollY)
+            });
+            
+            // 2. Blur only the bottom 60% of content
+            const mainContent = document.querySelector('main');
+            if (!mainContent) {
+              console.error('❌ No main content found');
+              return;
+            }
+            
+            // Find all content sections and blur only those below 40%
+            const allElements = mainContent.querySelectorAll('*');
+            let blurredElements = 0;
+            let clearElements = 0;
+            
+            allElements.forEach(element => {
+              const rect = element.getBoundingClientRect();
+              const elementTop = rect.top + window.scrollY;
+              
+              // If element is BELOW 40% mark, blur it
+              if (elementTop > fortyPercentHeight) {
+                element.classList.add('gate-blur');
+                element.classList.remove('gate-clear');
+                blurredElements++;
+              } else {
+                // Element is in top 40%, keep it clear
+                element.classList.remove('gate-blur');
+                element.classList.add('gate-clear');
+                clearElements++;
+              }
+            });
+            
+            console.log(`🌫️ Partial blur applied: ${blurredElements} elements blurred (bottom 60%), ${clearElements} elements clear (top 40%)`);
+            
+            // 3. Position and show the gate at 40% scroll point
+            console.log('🛠️ Positioning gate at 40% mark...');
+            
+            // Calculate gate position (center it in viewport when user reaches 40%)
+            const gateTopPosition = Math.max(fortyPercentHeight - (viewportHeight / 2), 100);
+            
+            // Apply inline styles for PARTIAL gate (positioned at 40% point)
+            gate.style.cssText = `
+              display: flex !important;
+              opacity: 1 !important;
+              visibility: visible !important;
+              position: absolute !important;
+              top: ${gateTopPosition}px !important;
+              left: 0 !important;
+              width: 100vw !important;
+              height: 100vh !important;
+              background: rgba(255, 255, 255, 0.95) !important;
+              backdrop-filter: blur(15px) !important;
+              -webkit-backdrop-filter: blur(15px) !important;
+              z-index: 2147483647 !important;
+              align-items: center !important;
+              justify-content: center !important;
+              pointer-events: auto !important;
+              transition: opacity 0.4s ease !important;
+            `;
+            
+            // Add active class for animations
+            setTimeout(() => {
+              gate.classList.add('active');
+              console.log('✅ Partial gate overlay shown at 40% position');
+              
+              // Focus email input
+              const emailInput = document.getElementById('gate-email-input');
+              if (emailInput) {
+                setTimeout(() => {
+                  emailInput.focus();
+                  console.log('📧 Email input focused');
+                }, 100);
+              }
+              
+              // Scroll to show the gate smoothly
+              window.scrollTo({
+                top: gateTopPosition - 100,
+                behavior: 'smooth'
+              });
+              
+              console.log('📍 Gate positioned at:', gateTopPosition, 'px (40% of content)');
+              
+            }, 10);
+          }
+          
+          // Unlock PARTIAL gate - HYBRID BEEHIV/MAGIC LINK VERSION
+          async function unlockGate() {
+            console.log('🔓 Unlocking gate with hybrid Beehiiv/Magic Link...');
+            
+            const emailInput = document.getElementById('gate-email-input');
+            const email = emailInput ? emailInput.value.trim() : '';
+            
+            if (!email || !email.includes('@')) {
+              alert('Please enter a valid email address.');
+              if (emailInput) emailInput.focus();
+              return;
+            }
+            
+            // Save where user came from for redirect
+            localStorage.setItem('txchyon_return_to', window.location.pathname);
+            
+            // Show loading
+            const submitBtn = document.querySelector('.gate-button');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.disabled = true;
+            
+            // TRY 1: BEEHIV API (Best UX - stays on site)
+            try {
+              console.log('🔄 Trying Beehiiv API...');
+              
+              const response = await fetch('https://api.beehiiv.com/v2/subscribers', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${BEEHIV_CONFIG.apiKey}`
+                },
+                body: JSON.stringify({
+                  email: email,
+                  publication_id: BEEHIV_CONFIG.publicationId,
+                  utm_source: 'txchyon-gate',
+                  utm_medium: 'web',
+                  utm_campaign: 'content-gate',
+                  tags: window.location.pathname.startsWith('/bear') ? ['bear-interest'] : [],
+                  send_welcome_email: true,
+                  double_opt_in: true
+                })
+              });
+              
+              if (response.ok) {
+                // API SUCCESS!
+                console.log('✅ Beehiiv API success');
+                alert(`✅ Subscribed! Check ${email} for confirmation email.\n\nClick the link in the email to unlock all content.`);
+                
+                grantTemporaryAccess(email);
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                return;
+              } else {
+                throw new Error('API returned error');
+              }
+              
+            } catch (apiError) {
+              console.log('❌ Beehiiv API failed, trying Magic Link...', apiError);
+              
+              // TRY 2: MAGIC LINK (More reliable)
+              try {
+                // Build magic link with redirect
+                const redirectUrl = encodeURIComponent('https://txchyon.com/verified?email=' + email);
+                const magicLink = `${BEEHIV_CONFIG.magicLinkBase}?email=${encodeURIComponent(email)}&utm_source=txchyon-gate&utm_medium=web&utm_campaign=content-gate&redirect=${redirectUrl}`;
+                
+                console.log('🔗 Using Magic Link:', magicLink);
+                
+                // Open in new tab
+                const magicWindow = window.open(magicLink, '_blank', 'noopener,noreferrer');
+                
+                if (magicWindow) {
+                  // Magic Link opened successfully
+                  alert(`📧 Opening subscription page...\n\nComplete the form in the new tab, then check ${email} for confirmation.`);
+                  
+                  grantTemporaryAccess(email);
+                  
+                  // Check if user completed subscription
+                  checkSubscriptionComplete(email, magicWindow);
+                  
+                } else {
+                  // Popup blocked, use iframe fallback
+                  throw new Error('Popup blocked');
+                }
+                
+              } catch (magicError) {
+                console.log('❌ Magic Link failed, trying iframe fallback...', magicError);
+                
+                // TRY 3: IFRAME FALLBACK (Most reliable)
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = `https://subscribe-forms.beehiiv.com/${BEEHIV_CONFIG.publicationId}?email=${encodeURIComponent(email)}`;
+                document.body.appendChild(iframe);
+                
+                alert(`✅ Submitted via secure form!\n\nCheck ${email} for confirmation email.`);
+                
+                grantTemporaryAccess(email);
+              }
+            } finally {
+              // Reset button
+              submitBtn.textContent = originalText;
+              submitBtn.disabled = false;
+            }
+          }
+          
+          // Grant temporary access while user waits for Beehiiv email
+          function grantTemporaryAccess(email) {
+            console.log('🔓 Granting temporary access for:', email);
+            
+            // Mark as pending (waiting for Beehiiv confirmation)
+            localStorage.setItem('txchyon_subscriber_pending', 'true');
+            localStorage.setItem('txchyon_subscriber_email', email);
+            
+            // Hide gate
+            const gate = document.getElementById('txchyon-gate');
+            if (gate) {
+              gate.style.opacity = '0';
+              setTimeout(() => gate.style.display = 'none', 400);
+            }
+            
+            // Remove blur
+            document.querySelectorAll('.gate-blur').forEach(el => {
+              el.classList.remove('gate-blur');
+            });
+            
+            // Remove clear classes
+            document.querySelectorAll('.gate-clear').forEach(el => {
+              el.classList.remove('gate-clear');
+            });
+            
+            // Show success state
+            const gateIcon = document.querySelector('.gate-icon');
+            const gateButton = document.querySelector('.gate-button');
+            if (gateIcon && gateButton) {
+              gateIcon.textContent = '📧';
+              gateButton.textContent = 'Check Your Email!';
+              gateButton.disabled = true;
+              setTimeout(() => {
+                gateIcon.textContent = '🔐';
+                gateButton.textContent = 'Get Your Txchyon Tesseract Pass';
+                gateButton.disabled = false;
+              }, 5000);
+            }
+          }
+          
+          // Check if subscription completed in magic link tab
+          function checkSubscriptionComplete(email, newWindow) {
+            let checks = 0;
+            const maxChecks = 30;
+            
+            const checkInterval = setInterval(() => {
+              checks++;
+              
+              if (newWindow.closed) {
+                clearInterval(checkInterval);
+                console.log('✅ Magic Link tab closed - subscription completed');
+                // Grant full access
+                localStorage.setItem('txchyon_subscriber', 'true');
+                return;
+              }
+              
+              if (checks >= maxChecks) {
+                clearInterval(checkInterval);
+                console.log('⏰ Magic Link check timeout');
+              }
+            }, 1000);
+          }
+          
+          // Check if user is already subscribed
+          function checkExistingSubscription() {
+            const email = prompt("Enter your subscription email to verify access:");
+            
+            if (!email) return;
+            
+            // Check localStorage first
+            const storedEmail = localStorage.getItem('txchyon_subscriber_email');
+            
+            if (storedEmail && storedEmail.toLowerCase() === email.toLowerCase()) {
+              // User is subscribed on this device
+              grantTemporaryAccess(email);
+              alert('✅ Access granted! Welcome back.');
+            } else {
+              // Not found locally
+              alert("Email not found in local storage.\n\nIf you subscribed via Beehiiv, please:\n1. Check your email for the confirmation link\n2. Click the link to activate access\n3. Refresh this page");
+              
+              // Offer to resend confirmation
+              if (confirm("Would you like us to resend your confirmation email?")) {
+                // Use magic link to resend
+                const magicLink = `${BEEHIV_CONFIG.magicLinkBase}?email=${encodeURIComponent(email)}`;
+                window.open(magicLink, '_blank');
+                alert("Confirmation email sent! Check your inbox.");
+              }
+            }
+          }
+          
+          // Close gate
+          function closeGate() {
+            console.log('🚪 Closing gate...');
+            const gate = document.getElementById('txchyon-gate');
+            if (gate) {
+              gate.style.opacity = '0';
+              setTimeout(() => gate.style.display = 'none', 400);
+            }
+          }
+          
+          // Reset function
+          window.txchyonResetGate = function() {
+            console.log('🔄 Resetting gate...');
+            localStorage.removeItem('txchyon_subscriber');
+            localStorage.removeItem('txchyon_subscriber_email');
+            localStorage.removeItem('txchyon_subscriber_pending');
+            location.reload();
+          };
+          
+          // Manual test function
+          window.testGate = function() {
+            console.log('🧪 Manual gate test');
+            showGateWithBlur();
+          };
+          
+          // Test Beehiiv submission
+          window.testBeehiiv = async function(testEmail = 'test@example.com') {
+            console.log('🧪 Testing Beehiiv with:', testEmail);
+            document.getElementById('gate-email-input').value = testEmail;
+            await unlockGate();
+          };
+          
+          // Start
+          document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM loaded, starting gate system...');
+            setTimeout(initGate, 500);
+          });
+        </script>
+      </>
+    )}
+  
+    <!-- Theme toggle -->
+    <script>
+      function toggleDarkMode() {
+        const THEME_KEY = 'txchyon-theme';
+        const html = document.documentElement;
+        const isDark = html.classList.contains('dark');
+        const newTheme = isDark ? 'light' : 'dark';
+        
+        if (newTheme === 'dark') {
+          html.classList.add('dark');
+          html.setAttribute('data-theme', 'dark');
+          document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#000000');
+        } else {
+          html.classList.remove('dark');
+          html.setAttribute('data-theme', 'light');
+          document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#ffffff');
+        }
+        
+        localStorage.setItem(THEME_KEY, newTheme);
+        updateThemeIcons();
+        window.dispatchEvent(new CustomEvent('themechange', { detail: newTheme }));
+      }
+      
+      function updateThemeIcons() {
+        const sunIcon = document.getElementById('theme-icon-sun');
+        const moonIcon = document.getElementById('theme-icon-moon');
+        const isDark = document.documentElement.classList.contains('dark');
+        
+        if (sunIcon) sunIcon.classList.toggle('hidden', !isDark);  // show sun in dark mode
+        if (moonIcon) moonIcon.classList.toggle('hidden', isDark);  // show moon in light mode
+
+      }
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        const toggleBtn = document.getElementById('theme-toggle');
+        if (toggleBtn) {
+          toggleBtn.addEventListener('click', toggleDarkMode);
+        }
+        updateThemeIcons();
+      });
+      
+      document.addEventListener('astro:page-load', () => {
+        const toggleBtn = document.getElementById('theme-toggle');
+        if (toggleBtn) {
+          toggleBtn.addEventListener('click', toggleDarkMode);
+        }
+        updateThemeIcons();
+      });
+    </script>
+  </body>
+</html>
+

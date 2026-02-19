@@ -1,0 +1,115 @@
+﻿/* ==============================================
+   DARK MODE — Txchyon Design System
+   Clean, surgical overrides. No destructive
+   catch-alls that break accent/gradient colors.
+   ============================================== */
+
+.dark {
+  color-scheme: dark;
+}
+
+/* ── Body ─────────────────────────────────────── */
+.dark body {
+  background-color: #0a0a0a !important;
+  color: #e0e0e0 !important;
+}
+
+/* ── Card & Container Backgrounds ────────────── */
+/* bg-white → near-black */
+.dark .bg-white {
+  background-color: #111111 !important;
+}
+
+/* bg-gray-50 / bg-gray-100 → dark gray */
+.dark .bg-gray-50 {
+  background-color: #141414 !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: #1a1a1a !important;
+}
+
+/* bg-body */
+.dark .bg-body {
+  background-color: #0a0a0a !important;
+}
+
+/* Post cards / article containers */
+.dark article,
+.dark .post-preview {
+  background-color: #111111 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ── Text Readability ─────────────────────────── */
+/* Only fix gray/black text — do NOT touch accent colors
+   (text-cyan-*, text-purple-*, text-pink-*, text-green-*,
+    text-orange-*, text-yellow-*, text-blue-*, text-transparent) */
+
+.dark .text-gray-900,
+.dark .text-black {
+  color: #f0f0f0 !important;
+}
+
+.dark .text-gray-700 {
+  color: #d0d0d0 !important;
+}
+
+.dark .text-gray-600 {
+  color: #c0c0c0 !important;
+}
+
+.dark .text-gray-500 {
+  color: #a0a0a0 !important;
+}
+
+.dark .text-gray-400 {
+  color: #888888 !important;
+}
+
+/* Headings — white in dark mode */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: #ffffff !important;
+}
+
+/* ── Borders ──────────────────────────────────── */
+.dark .border-gray-200,
+.dark .border-gray-300 {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ── Links ────────────────────────────────────── */
+/* Only style plain unstyled links — not buttons or colored links */
+.dark a:not([class*='text-']):not([class*='bg-']):not([class*='border-']) {
+  color: #22d3ee;
+}
+
+/* ── Header ───────────────────────────────────── */
+.dark header {
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ── Code Blocks ──────────────────────────────── */
+.dark code,
+.dark pre {
+  background-color: #1e1e1e !important;
+  color: #d4d4d4 !important;
+  border-color: #333333 !important;
+}
+
+/* ── Footer ───────────────────────────────────── */
+.dark footer.bg-dark {
+  background-color: #0a0a0a !important;
+}
+
+/* ── Blog Post Prose (scoped) ─────────────────── */
+.dark article.prose p,
+.dark article.prose li,
+.dark article.prose blockquote {
+  color: #d1d5db !important;
+}

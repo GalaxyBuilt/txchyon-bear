@@ -1,0 +1,62 @@
+﻿<!-- src/components/SimilarPosts.astro -->
+---
+const { posts = [] } = Astro.props;
+
+// Optional: Also accept a single 'post' prop for backward compatibility
+const { post } = Astro.props;
+
+// If single post is provided, find similar posts
+let similarPosts = posts;
+
+if (post && !posts.length) {
+  // Get all posts to find similar ones
+  import { getCollection } from "astro:content";
+  const allPosts = await getCollection("posts", ({ data }) => !data.draft);
+  
+  // Find similar posts (same category, exclude current post)
+  similarPosts = allPosts
+    .filter(p =>
+      p.id !== post.id &&
+      p.data.category === post.data.category
+    )
+    .slice(0, 3); // Show max 3 similar posts
+}
+---
+
+{similarPosts.length > 0 && (
+  <div class="mt-16 pt-12 border-t border-gray-200 dark:border-gray-800">
+    <h3 class="text-2xl font-bold mb-8 text-gray-900 dark:text-white">
+      {post ? `More in ${post.data.category}` : 'Similar Posts'}
+    </h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {similarPosts.map(similarPost => {
+        const { title, description, date } = similarPost.data;
+        const formattedDate = new Date(date).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric'
+        });
+
+        return (
+          <article class="bg-gray-50 dark:bg-gray-800 rounded-lg p-5 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
+            <div class="mb-3">
+              <span class="text-xs text-gray-500 dark:text-gray-400">
+                {formattedDate}
+              </span>
+            </div>
+            <h4 class="font-bold mb-2 text-gray-900 dark:text-white">
+              <a href={`/blog/${similarPost.id}`} class="hover:text-primary transition-colors">
+                {title}
+              </a>
+            </h4>
+            {description && (
+              <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                {description}
+              </p>
+            )}
+          </article>
+        );
+      })}
+    </div>
+  </div>
+)}
